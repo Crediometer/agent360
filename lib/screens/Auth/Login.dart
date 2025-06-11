@@ -212,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
               _formField(
                 label: 'Agent ID',
                 controller: _agentIdController,
-                hint: 'e.g., cred-12',
+                hint: 'cred-12',
               ),
               const SizedBox(height: 24),
               SizedBox(
@@ -220,8 +220,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 40,
                 child: ElevatedButton(
                   onPressed: _isFormValid
-                      ? () => _showToast('Sign in clicked')
+                      ? () {
+                          _showToast('Login successful');
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            Navigator.pushReplacementNamed(context, '/home');
+                          });
+                        }
                       : null,
+
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isFormValid
                         ? const Color(0xFF9B1919)

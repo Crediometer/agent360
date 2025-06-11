@@ -1,5 +1,6 @@
 import 'package:agent360/screens/Auth/ForgotPasswordScreen.dart';
 import 'package:agent360/screens/Auth/Login.dart';
+import 'package:agent360/screens/Tabs.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/SplashScreen.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         '/onboarding': (context) => OnBoardingScreen(),
         '/login': (context) => LoginScreen(),
         '/forgot-password': (_) => const ForgotPasswordScreen(),
+        '/home': (context) => const MainLayout(),
 
       },
       home: const SplashScreen(),
