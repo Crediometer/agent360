@@ -37,34 +37,46 @@ class _MainLayoutState extends State<MainLayout> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.red.shade800,
-        unselectedItemColor: Colors.black54,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.wallet),
-            label: 'Transactions',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people_alt),
-            label: 'Customers',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_add),
-            label: 'Agents',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.badge), label: 'Profile'),
-        ],
+  bottomNavigationBar: BottomNavigationBar(
+  type: BottomNavigationBarType.fixed,
+  currentIndex: _selectedIndex,
+  onTap: _onItemTapped,
+  selectedItemColor: Colors.white,
+  unselectedItemColor: Colors.black54,
+  showSelectedLabels: false,
+  showUnselectedLabels: false,
+  items: [
+    BottomNavigationBarItem(
+      icon: const Icon(Icons.home_rounded),
+      activeIcon: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: const BoxDecoration(
+          color: Color(0xFFCC162D), // 🔴 your custom red
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(Icons.home_rounded, color: Colors.white),
       ),
+      label: 'Home',
+    ),
+    const BottomNavigationBarItem(
+      icon: Icon(Icons.wallet),
+      label: 'Transactions',
+    ),
+    const BottomNavigationBarItem(
+      icon: Icon(Icons.people_alt),
+      label: 'Customers',
+    ),
+    const BottomNavigationBarItem(
+      icon: Icon(Icons.person_add),
+      label: 'Agents',
+    ),
+    const BottomNavigationBarItem(
+      icon: Icon(Icons.badge),
+      label: 'Profile',
+    ),
+  ],
+),
+
     );
   }
 }

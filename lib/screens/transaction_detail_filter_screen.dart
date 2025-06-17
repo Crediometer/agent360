@@ -1,3 +1,4 @@
+import 'package:agent360/screens/deposits_filtered_result_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -25,7 +26,9 @@ class _TransactionDetailFilterScreenState
     final initialDate = DateTime.now();
     final newDate = await showDatePicker(
       context: context,
-      initialDate: isStart ? (startDate ?? initialDate) : (endDate ?? initialDate),
+      initialDate: isStart
+          ? (startDate ?? initialDate)
+          : (endDate ?? initialDate),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
@@ -41,7 +44,11 @@ class _TransactionDetailFilterScreenState
     }
   }
 
-  Widget _buildFilterOption(String label, String? selectedValue, Function() onTap) {
+  Widget _buildFilterOption(
+    String label,
+    String? selectedValue,
+    Function() onTap,
+  ) {
     final isSelected = selectedValue == label;
     return GestureDetector(
       onTap: onTap,
@@ -66,19 +73,25 @@ class _TransactionDetailFilterScreenState
     );
   }
 
-  Widget _buildSection(String title, List<String> options, String? selected,
-      void Function(String) onSelect) {
+  Widget _buildSection(
+    String title,
+    List<String> options,
+    String? selected,
+    void Function(String) onSelect,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _sectionTitle(title),
         Wrap(
           children: options
-              .map((option) => _buildFilterOption(
-                    option,
-                    selected,
-                    () => onSelect(option),
-                  ))
+              .map(
+                (option) => _buildFilterOption(
+                  option,
+                  selected,
+                  () => onSelect(option),
+                ),
+              )
               .toList(),
         ),
       ],
@@ -108,7 +121,10 @@ class _TransactionDetailFilterScreenState
               color: const Color(0xFFB11226),
               child: SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -117,7 +133,10 @@ class _TransactionDetailFilterScreenState
                         children: [
                           GestureDetector(
                             onTap: () => Navigator.pop(context),
-                            child: const Icon(Icons.arrow_back, color: Colors.white),
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            ),
                           ),
                           const SizedBox(width: 8),
                           const Text(
@@ -141,11 +160,15 @@ class _TransactionDetailFilterScreenState
                                 filled: true,
                                 fillColor: Colors.white,
                                 contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 12),
+                                  vertical: 12,
+                                  horizontal: 12,
+                                ),
                                 hintText: 'Search',
                                 hintStyle: const TextStyle(color: Colors.grey),
-                                prefixIcon:
-                                    const Icon(Icons.search, color: Colors.grey),
+                                prefixIcon: const Icon(
+                                  Icons.search,
+                                  color: Colors.grey,
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide.none,
@@ -212,12 +235,22 @@ class _TransactionDetailFilterScreenState
                   ),
                   const Divider(height: 24),
 
-                  _buildSection('Amount', ['<50 ₦', '100 - 500 ₦', '500 ₦ <'],
-                      selectedAmount, (val) => setState(() => selectedAmount = val)),
+                  _buildSection(
+                    'Amount',
+                    ['<50 ₦', '100 - 500 ₦', '500 ₦ <'],
+                    selectedAmount,
+                    (val) => setState(() => selectedAmount = val),
+                  ),
 
                   _buildSection(
                     'Period',
-                    ['Today', 'This week', 'This month', 'Previous month', 'This year'],
+                    [
+                      'Today',
+                      'This week',
+                      'This month',
+                      'Previous month',
+                      'This year',
+                    ],
                     selectedPeriod,
                     (val) => setState(() => selectedPeriod = val),
                   ),
@@ -228,7 +261,10 @@ class _TransactionDetailFilterScreenState
                       Expanded(
                         child: OutlinedButton.icon(
                           onPressed: () => _pickDate(isStart: true),
-                          icon: const Icon(Icons.calendar_today_outlined, size: 18),
+                          icon: const Icon(
+                            Icons.calendar_today_outlined,
+                            size: 18,
+                          ),
                           label: Text(
                             startDate != null
                                 ? DateFormat('dd MMM yyyy').format(startDate!)
@@ -243,7 +279,10 @@ class _TransactionDetailFilterScreenState
                       Expanded(
                         child: OutlinedButton.icon(
                           onPressed: () => _pickDate(isStart: false),
-                          icon: const Icon(Icons.calendar_today_outlined, size: 18),
+                          icon: const Icon(
+                            Icons.calendar_today_outlined,
+                            size: 18,
+                          ),
                           label: Text(
                             endDate != null
                                 ? DateFormat('dd MMM yyyy').format(endDate!)
@@ -281,8 +320,15 @@ class _TransactionDetailFilterScreenState
                         ),
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                const DepositsFilteredResultScreen(),
+                          ),
+                        );
                       },
+
                       child: const Text(
                         'Apply',
                         style: TextStyle(
