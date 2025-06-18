@@ -1,10 +1,12 @@
+import 'package:agent360/screens/TransactionDetailsScreen.dart';
+import 'package:agent360/screens/deposits_filtered_result_screen.dart';
 import 'package:flutter/material.dart';
 import 'transaction_detail_filter_screen.dart';
 
 class DepositTransactionScreen extends StatefulWidget {
-  final VoidCallback onBack;
+  final VoidCallback? onBack;
 
-  const DepositTransactionScreen({super.key, required this.onBack});
+  const DepositTransactionScreen({this.onBack, super.key});
 
   @override
   State<DepositTransactionScreen> createState() =>
@@ -43,7 +45,7 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                   const SizedBox(width: 12),
                   const Expanded(
                     child: Text(
-                      'Deposit Transaction History',
+                      'Transaction History',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -67,8 +69,11 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                   children: [
                     // Search + Filter + Add
                     Padding(
-                      padding:
-                          const EdgeInsets.only(top: 16, left: 16, right: 16),
+                      padding: const EdgeInsets.only(
+                        top: 16,
+                        left: 16,
+                        right: 16,
+                      ),
                       child: Row(
                         children: [
                           Expanded(
@@ -78,8 +83,9 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                 prefixIcon: const Icon(Icons.search),
                                 filled: true,
                                 fillColor: Colors.white,
-                                contentPadding:
-                                    const EdgeInsets.symmetric(vertical: 0),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 0,
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide.none,
@@ -90,14 +96,25 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                           const SizedBox(width: 8),
                           _buildFilterMenu(),
                           const SizedBox(width: 8),
-                          Container(
-                            height: 48,
-                            width: 48,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      const TransactionDetailFilterScreen(),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              height: 48,
+                              width: 48,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(Icons.add),
                             ),
-                            child: const Icon(Icons.add),
                           ),
                         ],
                       ),
@@ -134,7 +151,9 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                             children: [
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 14),
+                                  horizontal: 12,
+                                  vertical: 14,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(12),
@@ -151,8 +170,11 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                     const CircleAvatar(
                                       backgroundColor: Colors.blue,
                                       radius: 22,
-                                      child: Icon(Icons.account_balance,
-                                          color: Colors.white, size: 20),
+                                      child: Icon(
+                                        Icons.account_balance,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
                                     ),
                                     const SizedBox(width: 12),
                                     Expanded(
@@ -163,14 +185,16 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                           Text(
                                             tx['name']!,
                                             style: const TextStyle(
-                                                fontWeight: FontWeight.bold),
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
                                             tx['type']!,
                                             style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey),
+                                              fontSize: 12,
+                                              color: Colors.grey,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -182,14 +206,16 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                         Text(
                                           tx['amount']!,
                                           style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
                                           tx['date']!,
                                           style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.grey),
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -197,8 +223,9 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                     GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          expandedIndex =
-                                              isExpanded ? null : index;
+                                          expandedIndex = isExpanded
+                                              ? null
+                                              : index;
                                         });
                                       },
                                       child: Icon(
@@ -219,7 +246,7 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) =>
-                                            const TransactionDetailFilterScreen(),
+                                            const TransactionDetailsScreen(),
                                       ),
                                     );
                                   },
@@ -227,7 +254,9 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                     width: double.infinity,
                                     margin: const EdgeInsets.only(top: 6),
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 16),
+                                      vertical: 10,
+                                      horizontal: 16,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFD32F2F),
                                       borderRadius: BorderRadius.circular(8),
@@ -240,8 +269,10 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                           'Transaction Id: #353367473',
                                           style: TextStyle(color: Colors.white),
                                         ),
-                                        Icon(Icons.arrow_forward,
-                                            color: Colors.white),
+                                        Icon(
+                                          Icons.arrow_forward,
+                                          color: Colors.white,
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -259,7 +290,9 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                       onTap: widget.onBack,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20),
+                          vertical: 10,
+                          horizontal: 20,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(color: Colors.red),
@@ -268,7 +301,9 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                         child: const Text(
                           '<  Back to Dashboard',
                           style: TextStyle(
-                              color: Colors.red, fontWeight: FontWeight.bold),
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -299,17 +334,13 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
             selectedFilter = value;
           });
         },
-        itemBuilder: (context) => [
-          'Deposit',
-          'Withdrawal',
-          'Advance',
-          'Balance',
-        ]
-            .map((type) => PopupMenuItem<String>(
-                  value: type,
-                  child: Text(type),
-                ))
-            .toList(),
+        itemBuilder: (context) =>
+            ['Deposit', 'Withdrawal', 'Advance', 'Balance']
+                .map(
+                  (type) =>
+                      PopupMenuItem<String>(value: type, child: Text(type)),
+                )
+                .toList(),
       ),
     );
   }

@@ -140,7 +140,7 @@ class _TransactionDetailFilterScreenState
                           ),
                           const SizedBox(width: 8),
                           const Text(
-                            'Deposit  Transaction History',
+                            'Transaction History',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,

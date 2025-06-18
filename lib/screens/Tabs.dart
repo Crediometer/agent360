@@ -1,3 +1,4 @@
+import 'package:agent360/screens/deposit_transaction_screen.dart';
 import 'package:flutter/material.dart';
 import 'DashboardScreen.dart';
 
@@ -25,7 +26,13 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = const [DashboardScreen()];
+ final List<Widget> _screens = const [
+  DashboardScreen(),
+  DepositTransactionScreen(),
+  Placeholder(), // Customers
+  Placeholder(), // Agents
+  Placeholder(), // Profile
+];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -58,10 +65,19 @@ class _MainLayoutState extends State<MainLayout> {
       ),
       label: 'Home',
     ),
-    const BottomNavigationBarItem(
-      icon: Icon(Icons.wallet),
-      label: 'Transactions',
+BottomNavigationBarItem(
+  icon: const Icon(Icons.wallet),
+  activeIcon: Container(
+    padding: const EdgeInsets.all(8),
+    decoration: const BoxDecoration(
+      color: Color(0xFFCC162D),
+      shape: BoxShape.circle,
     ),
+    child: const Icon(Icons.wallet, color: Colors.white),
+  ),
+  label: 'Transactions',
+),
+ 
     const BottomNavigationBarItem(
       icon: Icon(Icons.people_alt),
       label: 'Customers',
