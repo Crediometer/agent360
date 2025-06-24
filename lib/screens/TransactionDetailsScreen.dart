@@ -1,12 +1,45 @@
 import 'package:flutter/material.dart';
 
 class TransactionDetailsScreen extends StatelessWidget {
-  const TransactionDetailsScreen({super.key});
+  final String type;
+
+  const TransactionDetailsScreen({super.key, required this.type});
 
   @override
   Widget build(BuildContext context) {
     const redColor = Color(0xFFB11226);
     const titleStyle = TextStyle(fontWeight: FontWeight.bold);
+
+    // Use conditional labels/icons
+    final isWithdraw = type == 'Withdraw';
+    final isAdvance = type == 'Advance';
+    final isIncome = type == 'First Income';
+
+    final depositToLabel = isWithdraw
+        ? 'Withdraw from'
+        : isAdvance
+            ? 'Advance to'
+            : isIncome
+                ? 'First income from'
+                : 'Deposit to';
+
+    final depositToValue = isWithdraw
+        ? '***2345'
+        : isAdvance
+            ? '***5678'
+            : isIncome
+                ? ' ***6543'
+                : '***6543';
+
+    final iconType = isWithdraw
+        ? Icons.outbound
+        : isAdvance
+            ? Icons.trending_up
+            : isIncome
+                ? Icons.attach_money
+                : Icons.account_balance;
+
+    final amountSign = isWithdraw ? '-' : '+';
 
     return Scaffold(
       backgroundColor: redColor,
@@ -47,48 +80,41 @@ class TransactionDetailsScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    // Avatar and Name
                     const CircleAvatar(
                       radius: 28,
-                      backgroundImage: AssetImage('assets/user.jpg'), // or NetworkImage
+                      backgroundImage: AssetImage('assets/user.jpg'),
                     ),
                     const SizedBox(height: 10),
                     const Text(
                       'Ijeoma Agwuegbo',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
-
                     const SizedBox(height: 12),
-                    const Icon(Icons.account_balance, color: redColor, size: 30),
+                    Icon(iconType, color: redColor, size: 30),
                     const SizedBox(height: 4),
-                    const Text(
-                      'Total Amount',
-                      style: TextStyle(color: Colors.black54),
-                    ),
-                    const Text(
-                      '+263.382',
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: redColor),
+                    const Text('Total Amount', style: TextStyle(color: Colors.black54)),
+                    Text(
+                    '${amountSign}263.382',
+
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                     const SizedBox(height: 24),
 
-                    // Details
                     _detailRow(Icons.receipt_outlined, 'Transaction ID', '#353367473'),
-                    _detailRow(Icons.account_balance_wallet_outlined, 'Deposit to',
-                        'Savings ***6543'),
+                    _detailRow(Icons.account_balance_wallet_outlined, depositToLabel, depositToValue),
                     _detailRow(Icons.payment, 'Payment method', 'Cash'),
                     _detailRow(Icons.calendar_today, 'Date', '13.02.2025.'),
                     _detailRow(Icons.access_time, 'Time', '13:44'),
                     _detailRow(Icons.badge_outlined, 'Agent ID', 'cred-12'),
-                    _detailRow(Icons.attach_money_outlined, 'Fee', '0 \$'),
+                    _detailRow(Icons.attach_money_outlined, 'Fee', '₦ 0'),
                     _detailRow(Icons.note_outlined, 'Note', 'NA'),
 
                     const SizedBox(height: 24),
 
-                    // Action buttons
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -100,22 +126,6 @@ class TransactionDetailsScreen extends StatelessWidget {
                 ),
               ),
             ),
-
-            // Tabs
-            // Container(
-            //   padding: const EdgeInsets.symmetric(vertical: 12),
-            //   color: redColor,
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-            //     children: const [
-            //       Icon(Icons.home_rounded, color: redColor),
-            //       Icon(Icons.wallet, color: Colors.white),
-            //       Icon(Icons.people_alt, color: Colors.white),
-            //       Icon(Icons.person_add, color: Colors.white),
-            //       Icon(Icons.badge, color: Colors.white),
-            //     ],
-            //   ),
-            // ),
           ],
         ),
       ),

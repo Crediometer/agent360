@@ -103,14 +103,14 @@ class DepositsFilteredResultScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final tx = transactions[index];
                   return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const TransactionDetailsScreen(),
-                        ),
-                      );
-                    },
+                    // onTap: () {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (_) => const TransactionDetailsScreen(),
+                    //     ),
+                    //   );
+                    // },
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 16),
                       child: Row(

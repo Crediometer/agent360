@@ -9,24 +9,29 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  bool showDepositScreen = false;
+  bool showTransactionScreen = false;
+  String selectedTransactionType = 'Deposit';
 
-  void _navigateToDepositScreen() {
+  void _navigateToTransactionScreen(String type) {
     setState(() {
-      showDepositScreen = true;
+      showTransactionScreen = true;
+      selectedTransactionType = type;
     });
   }
 
   void _goBackToDashboard() {
     setState(() {
-      showDepositScreen = false;
+      showTransactionScreen = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return showDepositScreen
-        ? DepositTransactionScreen(onBack: _goBackToDashboard)
+    return showTransactionScreen
+        ? DepositTransactionScreen(
+            onBack: _goBackToDashboard,
+            type: selectedTransactionType,
+          )
         : _buildDashboard(context);
   }
 
@@ -68,7 +73,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 10),
               const Text(
                 'Hi Roberta!',
@@ -81,7 +85,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const SizedBox(height: 20),
               Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFFCC162D), // Color with transparency
+                  color: const Color(0xFFCC162D),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 padding: const EdgeInsets.all(16),
@@ -97,7 +101,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          '0.00', // example balance
+                          '0.00',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -116,7 +120,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: Colors.black.withOpacity(0.1),
                             spreadRadius: 1,
                             blurRadius: 4,
-                            offset: Offset(0, 2), // horizontal, vertical
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
@@ -129,7 +133,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 20),
               ..._buildInfoTiles(context),
               const SizedBox(height: 12),
@@ -153,17 +156,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
         'icon': Icons.account_balance,
         'label': 'Total Deposit:',
         'value': '₦ 0.00',
-        'onTap': _navigateToDepositScreen,
+        'onTap': () => _navigateToTransactionScreen('Deposit'),
       },
       {
         'icon': Icons.account_balance_wallet,
         'label': 'Total Withdrawals:',
         'value': '₦ 0.00',
+        'onTap': () => _navigateToTransactionScreen('Withdraw'),
       },
       {
         'icon': Icons.receipt_long,
         'label': 'Total Advences:',
         'value': '₦ 0.00',
+        'onTap': () => _navigateToTransactionScreen('Advance'),
       },
       {
         'icon': Icons.sync_alt,
@@ -174,6 +179,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         'icon': Icons.monetization_on,
         'label': 'First Income:',
         'value': '₦ 0.00',
+        'onTap': () => _navigateToTransactionScreen('First Income'),
       },
       {
         'icon': Icons.send,

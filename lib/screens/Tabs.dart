@@ -28,7 +28,6 @@ class _MainLayoutState extends State<MainLayout> {
 
  final List<Widget> _screens = const [
   DashboardScreen(),
-  DepositTransactionScreen(),
   Placeholder(), // Customers
   Placeholder(), // Agents
   Placeholder(), // Profile

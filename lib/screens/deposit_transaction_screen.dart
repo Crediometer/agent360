@@ -1,12 +1,18 @@
 import 'package:agent360/screens/TransactionDetailsScreen.dart';
-import 'package:agent360/screens/deposits_filtered_result_screen.dart';
+import 'package:agent360/screens/deposit_funds_screen.dart';
+import 'package:agent360/screens/withdraw_funds_screen.dart';
 import 'package:flutter/material.dart';
 import 'transaction_detail_filter_screen.dart';
 
 class DepositTransactionScreen extends StatefulWidget {
   final VoidCallback? onBack;
+  final String type;
 
-  const DepositTransactionScreen({this.onBack, super.key});
+  const DepositTransactionScreen({
+    required this.type,
+    required this.onBack,
+    super.key,
+  });
 
   @override
   State<DepositTransactionScreen> createState() =>
@@ -17,14 +23,22 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
   String selectedFilter = 'Deposit';
   int? expandedIndex;
 
-  final List<Map<String, String>> transactions = List.generate(7, (index) {
-    return {
-      'name': 'Ijeoma Agruegbo',
-      'type': 'Deposit',
-      'amount': '+₦263.382',
-      'date': '12.01.2025',
-    };
-  });
+  late final List<Map<String, String>> transactions;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Generate dummy transactions based on widget.type
+    transactions = List.generate(6, (index) {
+      return {
+        'name': index.isEven ? 'Ijeoma Agwuegbo' : 'Joseph Brown',
+        'type': widget.type,
+        'amount': ['Withdraw'].contains(widget.type) ? '-₦263.382' : '+₦263.382',
+        'date': '12.01.2025',
+      };
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +57,10 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                     child: const Icon(Icons.arrow_back, color: Colors.white),
                   ),
                   const SizedBox(width: 12),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Transaction History',
-                      style: TextStyle(
+                      '${widget.type} Transaction History',
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -70,10 +84,7 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                     // Search + Filter + Add
                     Padding(
                       padding: const EdgeInsets.only(
-                        top: 16,
-                        left: 16,
-                        right: 16,
-                      ),
+                          top: 16, left: 16, right: 16),
                       child: Row(
                         children: [
                           Expanded(
@@ -96,26 +107,35 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                           const SizedBox(width: 8),
                           _buildFilterMenu(),
                           const SizedBox(width: 8),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      const TransactionDetailFilterScreen(),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              height: 48,
-                              width: 48,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Icon(Icons.add),
-                            ),
-                          ),
+                       GestureDetector(
+  onTap: () {
+    if (widget.type == 'Deposit') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const DepositFundsScreen(), // ⬅️ your deposit screen
+        ),
+      );
+    } else if (widget.type == 'Withdraw') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const WithdrawFundsScreen(), // ⬅️ your withdraw screen
+        ),
+      );
+    }
+  },
+  child: Container(
+    height: 48,
+    width: 48,
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: const Icon(Icons.add),
+  ),
+),
+
                         ],
                       ),
                     ),
@@ -151,9 +171,7 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                             children: [
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 14,
-                                ),
+                                    horizontal: 12, vertical: 14),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(12),
@@ -170,11 +188,8 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                     const CircleAvatar(
                                       backgroundColor: Colors.blue,
                                       radius: 22,
-                                      child: Icon(
-                                        Icons.account_balance,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
+                                      child: Icon(Icons.account_balance,
+                                          color: Colors.white, size: 20),
                                     ),
                                     const SizedBox(width: 12),
                                     Expanded(
@@ -223,9 +238,8 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                     GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          expandedIndex = isExpanded
-                                              ? null
-                                              : index;
+                                          expandedIndex =
+                                              isExpanded ? null : index;
                                         });
                                       },
                                       child: Icon(
@@ -246,7 +260,7 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) =>
-                                            const TransactionDetailsScreen(),
+                                            TransactionDetailsScreen(type: widget.type),
                                       ),
                                     );
                                   },
@@ -254,9 +268,7 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                     width: double.infinity,
                                     margin: const EdgeInsets.only(top: 6),
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 10,
-                                      horizontal: 16,
-                                    ),
+                                        vertical: 10, horizontal: 16),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFD32F2F),
                                       borderRadius: BorderRadius.circular(8),
@@ -269,10 +281,8 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                           'Transaction Id: #353367473',
                                           style: TextStyle(color: Colors.white),
                                         ),
-                                        Icon(
-                                          Icons.arrow_forward,
-                                          color: Colors.white,
-                                        ),
+                                        Icon(Icons.arrow_forward,
+                                            color: Colors.white),
                                       ],
                                     ),
                                   ),
@@ -290,9 +300,7 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                       onTap: widget.onBack,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 20,
-                        ),
+                            vertical: 10, horizontal: 20),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(color: Colors.red),
@@ -334,13 +342,12 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
             selectedFilter = value;
           });
         },
-        itemBuilder: (context) =>
-            ['Deposit', 'Withdrawal', 'Advance', 'Balance']
-                .map(
-                  (type) =>
-                      PopupMenuItem<String>(value: type, child: Text(type)),
-                )
-                .toList(),
+        itemBuilder: (context) => ['Deposit', 'Withdrawal', 'Advance', 'Balance']
+            .map((type) => PopupMenuItem<String>(
+                  value: type,
+                  child: Text(type),
+                ))
+            .toList(),
       ),
     );
   }
