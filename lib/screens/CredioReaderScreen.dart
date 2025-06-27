@@ -1,47 +1,44 @@
-import 'package:agent360/screens/DashboardScreen.dart';
 import 'package:flutter/material.dart';
+import 'DashboardScreen.dart';
 
-// void main() => runApp(CredioReaderApp());
+void main() => runApp(const CredioReaderScreen());
 
 class CredioReaderScreen extends StatelessWidget {
   const CredioReaderScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return InsertCardScreen(); // Starts the transaction flow
+    return const InsertCardReaderScreen(); // Starts from step 0
   }
 }
 
+
 class StepProgress extends StatelessWidget {
   final int currentStep;
-
-  StepProgress({required this.currentStep});
+  final int totalSteps;
+  const StepProgress({
+    super.key,
+    required this.currentStep,
+    this.totalSteps = 6,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(3, (index) {
-        bool isCompleted = index < currentStep;
-        bool isCurrent = index == currentStep;
-
+      children: List.generate(totalSteps, (i) {
+        final isActive = i == currentStep;
+        final isDone = i < currentStep;
+        final color = isDone || isActive ? Colors.green : Colors.grey.shade400;
         return Row(
           children: [
             Icon(
-              isCompleted
-                  ? Icons.check_circle
-                  : isCurrent
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_unchecked,
-              color: isCompleted || isCurrent ? Colors.green : Colors.grey,
+              isDone ? Icons.check_circle : Icons.radio_button_unchecked,
+              color: color,
               size: 20,
             ),
-            if (index < 2)
-              Container(
-                width: 40,
-                height: 2,
-                color: (index < currentStep - 1) ? Colors.green : Colors.grey,
-              ),
+            if (i < totalSteps - 1)
+              Container(width: 24, height: 2, color: color),
           ],
         );
       }),
@@ -53,41 +50,39 @@ class BaseScreen extends StatelessWidget {
   final String title;
   final int step;
   final Widget content;
-  final VoidCallback? onButtonPressed;
+  final VoidCallback? onNext;
   final String? buttonText;
+  final Color backgroundColor;
 
-  BaseScreen({
+  const BaseScreen({
+    super.key,
     required this.title,
     required this.step,
     required this.content,
-    this.onButtonPressed,
+    this.onNext,
     this.buttonText,
+    this.backgroundColor = Colors.white,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          title,
-          style: TextStyle(color: Colors.white), // White title text
-        ),
-        backgroundColor: Colors.red[800],
-        // actions: [Icon(Icons.account_circle_outlined, color: Colors.white)],
-        leading: Navigator.canPop(context)
-            ? BackButton(color: Colors.white)
-            : null,
+        title: Text(title, style: const TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFFD32F2F),
+        leading:
+            Navigator.canPop(context) ? const BackButton(color: Colors.white) : null,
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(40),
+          preferredSize: const Size.fromHeight(40),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: StepProgress(currentStep: step),
           ),
         ),
       ),
-
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
+      body: Container(
+        color: backgroundColor,
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
             Expanded(child: content),
@@ -95,17 +90,17 @@ class BaseScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: onButtonPressed,
+                  onPressed: onNext,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red[800],
+                    backgroundColor: const Color(0xFFD32F2F),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   child: Text(
                     buttonText!,
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: const TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
               ),
@@ -116,112 +111,250 @@ class BaseScreen extends StatelessWidget {
   }
 }
 
-// Screen 1: Insert Your Card
-class InsertCardScreen extends StatelessWidget {
+// 1️⃣ Connect device
+class InsertCardReaderScreen extends StatelessWidget {
+  const InsertCardReaderScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
       title: 'Credio Reader',
       step: 0,
+      backgroundColor: Colors.white,
       content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.credit_card, size: 48),
-          SizedBox(height: 16),
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(Icons.bluetooth_searching, size: 72, color: Colors.black),
+          SizedBox(height: 24),
           Text(
-            "Insert your card",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            'Connect Credio reader',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+            textAlign: TextAlign.center,
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 12),
           Text(
-            "Please connect the card reader and insert your card. Wait for the card to be detected.",
+            'Please connect the card reader and wait for detection.',
+            style: TextStyle(color: Colors.black),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
       buttonText: 'Continue',
-      onButtonPressed: () {
+      onNext: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => ConfirmAmountScreen()),
+          MaterialPageRoute(builder: (_) => const SelectDeviceScreen()),
         );
       },
     );
   }
 }
 
-// Screen 2: Confirm Transaction Amount
-class ConfirmAmountScreen extends StatelessWidget {
+// 2️⃣ Device selection
+class SelectDeviceScreen extends StatelessWidget {
+  const SelectDeviceScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
       title: 'Credio Reader',
       step: 1,
+      backgroundColor: Colors.white,
       content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.check, size: 48, color: Colors.black),
-          SizedBox(height: 16),
+        children: const [
           Text(
-            "Confirm Transaction Amount",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            'Select a device',
+            style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 8),
-          Text(
-            "Please verify the transaction amount: ",
-            style: TextStyle(fontSize: 16),
+          SizedBox(height: 12),
+          ListTile(
+            tileColor: Colors.black,
+            title: Text('Device XYZ'),
+            subtitle: Text('00:11:22:33:44'),
           ),
-          Text(
-            "100.000 \$",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 8),
-          Text("Confirm to proceed."),
         ],
       ),
-      buttonText: 'Confirm',
-      onButtonPressed: () {
+      buttonText: 'Continue',
+      onNext: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => EnterPinScreen()),
+          MaterialPageRoute(builder: (_) => const InsertCardScreen()),
         );
       },
     );
   }
 }
 
-// Screen 3: Enter Your PIN
-class EnterPinScreen extends StatelessWidget {
+// 3️⃣ Insert card
+class InsertCardScreen extends StatelessWidget {
+  const InsertCardScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
       title: 'Credio Reader',
       step: 2,
+      backgroundColor: Colors.white,
       content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.lock_outline, size: 48),
-          SizedBox(height: 16),
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(Icons.credit_card, size: 72, color: Colors.black),
+          SizedBox(height: 24),
           Text(
-            "Enter Your PIN",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            'Insert your card',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+            textAlign: TextAlign.center,
           ),
-          SizedBox(height: 8),
-          Text("Insert your PIN to authorize the transaction."),
+          SizedBox(height: 12),
+          Text(
+            'Please insert your card into Credio reader to continue.',
+            style: TextStyle(color: Colors.black),
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
       buttonText: 'Continue',
-      onButtonPressed: () {
+      onNext: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => ProcessingScreen()),
+          MaterialPageRoute(builder: (_) => const ConfirmAmountScreen()),
         );
       },
     );
   }
 }
 
-// Screen 4: Processing Transaction
+// 4️⃣ Confirm Amount
+class ConfirmAmountScreen extends StatelessWidget {
+  const ConfirmAmountScreen({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return BaseScreen(
+      title: 'Credio Reader',
+      step: 3,
+      backgroundColor: Colors.white,
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(Icons.check_circle_outline, size: 72, color: Colors.red),
+          SizedBox(height: 24),
+          Text(
+            'Confirm Transaction Amount',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 12),
+          Text('Please verify transaction amount:', style: TextStyle(color: Colors.black54)),
+          SizedBox(height: 8),
+          Text(
+            '₦100,000',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+        ],
+      ),
+      buttonText: 'Confirm',
+      onNext: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const EnterPinScreen()),
+        );
+      },
+    );
+  }
+}
+
+// 5️⃣ Enter PIN
+class EnterPinScreen extends StatefulWidget {
+  const EnterPinScreen({super.key});
+
+  @override
+  State<EnterPinScreen> createState() => _EnterPinScreenState();
+}
+
+class _EnterPinScreenState extends State<EnterPinScreen> {
+  final List<TextEditingController> _controllers =
+      List.generate(4, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
+
+  void _submitPin() {
+    final pin = _controllers.map((c) => c.text).join();
+    if (pin.length == 4) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const ProcessingScreen()),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    for (final f in _focusNodes) {
+      f.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BaseScreen(
+      title: 'Credio Reader',
+      step: 4,
+      backgroundColor: Colors.white,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.lock_outline, size: 40),
+          const SizedBox(height: 16),
+          const Text(
+            'Enter Your PIN',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Insert your PIN to authorize the transaction.',
+            style: TextStyle(color: Colors.black54),
+          ),
+          const SizedBox(height: 32),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: List.generate(4, (i) {
+              return SizedBox(
+                width: 60,
+                child: TextField(
+                  controller: _controllers[i],
+                  focusNode: _focusNodes[i],
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  obscureText: true,
+                  maxLength: 1,
+                  decoration: const InputDecoration(
+                    counterText: '',
+                    border: OutlineInputBorder(),
+                  ),
+                  style: const TextStyle(fontSize: 24),
+                  onChanged: (value) {
+                    if (value.isNotEmpty && i < 3) {
+                      FocusScope.of(context).requestFocus(_focusNodes[i + 1]);
+                    } else if (value.isEmpty && i > 0) {
+                      FocusScope.of(context).requestFocus(_focusNodes[i - 1]);
+                    }
+                  },
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
+      buttonText: 'Continue',
+      onNext: _submitPin,
+    );
+  }
+}
+
+
 class ProcessingScreen extends StatefulWidget {
+  const ProcessingScreen({super.key});
+
   @override
   State<ProcessingScreen> createState() => _ProcessingScreenState();
 }
@@ -230,7 +363,7 @@ class _ProcessingScreenState extends State<ProcessingScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const TransactionSuccessScreen()),
@@ -240,23 +373,33 @@ class _ProcessingScreenState extends State<ProcessingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseScreen(
-      title: 'Add New Customer',
-      step: 3,
-      content: Center(
+    return const Scaffold(
+      backgroundColor: Color(0xFFF6F6F6),
+      body: Center(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            CircularProgressIndicator(color: Colors.green),
-            SizedBox(height: 24),
-            Text(
-              "Processing Transaction",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 36,
+              height: 36,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF017A36)),
+                strokeWidth: 4,
+              ),
             ),
-            SizedBox(height: 8),
+            SizedBox(height: 32),
             Text(
-              "Your transaction is being processed.\nPlease wait.",
+              'Processing Transaction',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 12),
+            Text(
+              'Your transaction is being processed.\nPlease wait.',
               textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14),
             ),
           ],
         ),
@@ -265,13 +408,16 @@ class _ProcessingScreenState extends State<ProcessingScreen> {
   }
 }
 
+
+
+
 class TransactionSuccessScreen extends StatelessWidget {
   const TransactionSuccessScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.red[800],
+      backgroundColor: const Color(0xFFA70F1A), // deep red background
       body: Column(
         children: [
           const SizedBox(height: 80),
@@ -280,84 +426,80 @@ class TransactionSuccessScreen extends StatelessWidget {
               width: double.infinity,
               decoration: const BoxDecoration(
                 color: Color(0xFFF6F6F6),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(32),
-                  topRight: Radius.circular(32),
-                ),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
               ),
-              padding: const EdgeInsets.all(24),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const SizedBox(height: 32),
                   Container(
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFE0F2E9),
-                      shape: BoxShape.circle,
-                    ),
                     padding: const EdgeInsets.all(24),
-                    child: const Icon(
-                      Icons.check,
-                      size: 48,
-                      color: Colors.white,
-                    ),
-                    foregroundDecoration: const BoxDecoration(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDFF5E3), // light green circle
                       shape: BoxShape.circle,
-                      color: Colors.green,
                     ),
+                    child: const Icon(Icons.check, size: 48, color: Color(0xFF017A36)),
                   ),
                   const SizedBox(height: 24),
-                  const Text("Great!", style: TextStyle(fontSize: 16)),
-                  const SizedBox(height: 12),
-                  const Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(text: "Payment of "),
-                        TextSpan(
-                          text: "100.000\$",
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
+                  const Text(
+                    'Great!',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 16),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 32),
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(text: 'Payment of ', style: TextStyle(fontSize: 16)),
+                          TextSpan(
+                            text: '100.000\$',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF017A36), // green
+                            ),
                           ),
-                        ),
-                        TextSpan(text: " successfully processed."),
-                      ],
+                          TextSpan(
+                            text: '\nsuccessfully processed.',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 12),
                   const Text(
-                    "Thank you for your transaction!",
+                    'Thank you for your transaction!',
                     style: TextStyle(fontSize: 14),
-                    textAlign: TextAlign.center,
                   ),
                   const Spacer(),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const DashboardScreen(),
+                  Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (_) => const DashboardScreen()),
+                            (route) => false,
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFA70F1A),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          (route) => false,
-                        );
-                      },
-
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red[800],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
-                      child: const Text(
-                        "Back to dashboard",
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                        child: const Text(
+                          'Back to dashboard',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
                       ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -367,3 +509,5 @@ class TransactionSuccessScreen extends StatelessWidget {
     );
   }
 }
+
+
