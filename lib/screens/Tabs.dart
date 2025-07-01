@@ -1,3 +1,4 @@
+import 'package:agent360/screens/QuickPaymentOptionsScreen.dart';
 import 'package:agent360/screens/deposit_transaction_screen.dart';
 import 'package:flutter/material.dart';
 import 'DashboardScreen.dart';
@@ -28,7 +29,7 @@ class _MainLayoutState extends State<MainLayout> {
 
  final List<Widget> _screens = const [
   DashboardScreen(),
-  Placeholder(), // Customers
+  QuickPaymentOptionsScreen(), // Customers
   Placeholder(), // Agents
   Placeholder(), // Profile
 ];
