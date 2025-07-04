@@ -1,4 +1,7 @@
 import 'package:agent360/screens/Deposit-Rate-screen.dart';
+import 'package:agent360/screens/advanceFundsScreen.dart';
+import 'package:agent360/screens/deposit_funds_screen.dart';
+import 'package:agent360/screens/withdraw_funds_screen.dart';
 import 'package:flutter/material.dart';
 
 class QuickPaymentOptionsScreen extends StatelessWidget {
@@ -48,7 +51,7 @@ class QuickPaymentOptionsScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => const DepositRateScreen(),
+              builder: (_) => const DepositFundsScreen(),
             ),
           );
         },
@@ -59,8 +62,13 @@ class QuickPaymentOptionsScreen extends StatelessWidget {
         subtitle: "Take out of your balance",
         iconBg: const Color(0xFFFCDCDC),
         iconColor: const Color(0xFFB42D2D),
-        onTap: () {
-          _showComingSoon(context);
+         onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const WithdrawFundsScreen(),
+            ),
+          );
         },
       ),
       _buildOption(
@@ -69,8 +77,13 @@ class QuickPaymentOptionsScreen extends StatelessWidget {
         subtitle: "Get funds now,\npay later",
         iconBg: const Color(0xFFE1F3E6),
         iconColor: const Color(0xFF047C3F),
-        onTap: () {
-          _showComingSoon(context);
+          onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const AdvanceFundsScreen(),
+            ),
+          );
         },
       ),
       _buildOption(
@@ -79,8 +92,13 @@ class QuickPaymentOptionsScreen extends StatelessWidget {
         subtitle: "Set deposit rate",
         iconBg: const Color(0xFFF9E8E8),
         iconColor: const Color(0xFFA70F1A),
-        onTap: () {
-          _showComingSoon(context);
+         onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const DepositRateScreen(),
+            ),
+          );
         },
       ),
     ],

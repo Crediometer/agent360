@@ -140,7 +140,7 @@ class _TransactionDetailFilterScreenState
                           ),
                           const SizedBox(width: 8),
                           const Text(
-                            'Transaction History',
+                            'Customer List',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,

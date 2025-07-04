@@ -1,6 +1,7 @@
+import 'package:agent360/screens/CustomerListScreen.dart';
 import 'package:agent360/screens/QuickPaymentOptionsScreen.dart';
-import 'package:agent360/screens/deposit_transaction_screen.dart';
 import 'package:flutter/material.dart';
+
 import 'DashboardScreen.dart';
 
 void main() {
@@ -27,12 +28,13 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   int _selectedIndex = 0;
 
- final List<Widget> _screens = const [
-  DashboardScreen(),
-  QuickPaymentOptionsScreen(), // Customers
-  Placeholder(), // Agents
-  Placeholder(), // Profile
+final List<Widget> _screens = [
+  const DashboardScreen(),
+  const QuickPaymentOptionsScreen(),
+  CustomerListScreen(),
+  const Placeholder(),
 ];
+
 
   void _onItemTapped(int index) {
     setState(() {
@@ -44,7 +46,7 @@ class _MainLayoutState extends State<MainLayout> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_selectedIndex],
-  bottomNavigationBar: BottomNavigationBar(
+ bottomNavigationBar: BottomNavigationBar(
   type: BottomNavigationBarType.fixed,
   currentIndex: _selectedIndex,
   onTap: _onItemTapped,
@@ -58,40 +60,64 @@ class _MainLayoutState extends State<MainLayout> {
       activeIcon: Container(
         padding: const EdgeInsets.all(8),
         decoration: const BoxDecoration(
-          color: Color(0xFFCC162D), // 🔴 your custom red
+          color: Color(0xFFCC162D),
           shape: BoxShape.circle,
         ),
         child: const Icon(Icons.home_rounded, color: Colors.white),
       ),
       label: 'Home',
     ),
-BottomNavigationBarItem(
-  icon: const Icon(Icons.wallet),
-  activeIcon: Container(
-    padding: const EdgeInsets.all(8),
-    decoration: const BoxDecoration(
-      color: Color(0xFFCC162D),
-      shape: BoxShape.circle,
+    BottomNavigationBarItem(
+      icon: const Icon(Icons.wallet),
+      activeIcon: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: const BoxDecoration(
+          color: Color(0xFFCC162D),
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(Icons.wallet, color: Colors.white),
+      ),
+      label: 'Transactions',
     ),
-    child: const Icon(Icons.wallet, color: Colors.white),
-  ),
-  label: 'Transactions',
-),
- 
-    const BottomNavigationBarItem(
-      icon: Icon(Icons.people_alt),
+    BottomNavigationBarItem(
+      icon: const Icon(Icons.people_alt),
+      activeIcon: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: const BoxDecoration(
+          color: Color(0xFFCC162D),
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(Icons.people_alt, color: Colors.white),
+      ),
       label: 'Customers',
     ),
-    const BottomNavigationBarItem(
-      icon: Icon(Icons.person_add),
+    BottomNavigationBarItem(
+      icon: const Icon(Icons.person_add),
+      activeIcon: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: const BoxDecoration(
+          color: Color(0xFFCC162D),
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(Icons.person_add, color: Colors.white),
+      ),
       label: 'Agents',
     ),
-    const BottomNavigationBarItem(
-      icon: Icon(Icons.badge),
+    BottomNavigationBarItem(
+      icon: const Icon(Icons.badge),
+      activeIcon: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: const BoxDecoration(
+          color: Color(0xFFCC162D),
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(Icons.badge, color: Colors.white),
+      ),
       label: 'Profile',
     ),
   ],
 ),
+
 
     );
   }
