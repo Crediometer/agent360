@@ -1,3 +1,4 @@
+import 'package:agent360/screens/AddCustomerStep1Screen.dart';
 import 'package:agent360/screens/CustomerListScreen.dart';
 import 'package:agent360/screens/QuickPaymentOptionsScreen.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ final List<Widget> _screens = [
   const DashboardScreen(),
   const QuickPaymentOptionsScreen(),
   CustomerListScreen(),
-  const Placeholder(),
+  const AddCustomerStep1Screen(),
 ];
 
 

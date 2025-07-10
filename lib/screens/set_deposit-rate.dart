@@ -52,40 +52,58 @@ class _SetDepositRateScreenState extends State<SetDepositRateScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.red,
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ), // Set back icon color to white
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Set Deposit Rate', style: TextStyle(fontSize: 18)),
-            Text('Enter Deposit Rate for May 2025', style: TextStyle(fontSize: 12)),
+            Text(
+              'Set Deposit Rate',
+              style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
+            Text(
+              'Enter Deposit Rate for May 2025',
+              style: TextStyle(fontSize: 12, color: Colors.white),
+            ),
           ],
         ),
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            TextField(
-              controller: amountController,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-              decoration: InputDecoration(
-                prefixText: '₦ ',
-                border: InputBorder.none,
+            Center(
+              child: SizedBox(
+                width: 250, // Adjust width as needed
+                child: TextField(
+                  controller: amountController,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                    prefixText: '₦ ',
+                    border: InputBorder.none,
+                  ),
+                  onChanged: (value) {
+                    final parsed = double.tryParse(value);
+                    if (parsed != null) {
+                      setState(() => depositAmount = parsed);
+                    }
+                  },
+                ),
               ),
-              onChanged: (value) {
-                final parsed = double.tryParse(value);
-                if (parsed != null) {
-                  setState(() => depositAmount = parsed);
-                }
-              },
             ),
             SizedBox(height: 16),
             TextField(
               controller: nameController,
               decoration: InputDecoration(
                 hintText: 'Select customer name',
-                border: OutlineInputBorder(borderSide: BorderSide(color: Colors.purple)),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.purple),
+                ),
               ),
             ),
             SizedBox(height: 12),
@@ -131,7 +149,6 @@ class _SetDepositRateScreenState extends State<SetDepositRateScreen> {
     );
   }
 }
-
 
 class DepositSuccessScreen extends StatelessWidget {
   @override

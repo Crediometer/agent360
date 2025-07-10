@@ -1,5 +1,6 @@
 import 'package:agent360/screens/TransactionDetailsScreen.dart';
 import 'package:agent360/screens/deposit_funds_screen.dart';
+import 'package:agent360/screens/filter-screens-for-deposit.dart';
 import 'package:agent360/screens/withdraw_funds_screen.dart';
 import 'package:flutter/material.dart';
 import 'transaction_detail_filter_screen.dart';
@@ -34,7 +35,9 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
       return {
         'name': index.isEven ? 'Ijeoma Agwuegbo' : 'Joseph Brown',
         'type': widget.type,
-        'amount': ['Withdraw'].contains(widget.type) ? '-₦263.382' : '+₦263.382',
+        'amount': ['Withdraw'].contains(widget.type)
+            ? '-₦263.382'
+            : '+₦263.382',
         'date': '12.01.2025',
       };
     });
@@ -84,7 +87,10 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                     // Search + Filter + Add
                     Padding(
                       padding: const EdgeInsets.only(
-                          top: 16, left: 16, right: 16),
+                        top: 16,
+                        left: 16,
+                        right: 16,
+                      ),
                       child: Row(
                         children: [
                           Expanded(
@@ -105,37 +111,38 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          _buildFilterMenu(),
+                          _buildFilterMenu(context),
                           const SizedBox(width: 8),
-                       GestureDetector(
-  onTap: () {
-    if (widget.type == 'Deposit') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const DepositFundsScreen(), // ⬅️ your deposit screen
-        ),
-      );
-    } else if (widget.type == 'Withdraw') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const WithdrawFundsScreen(), // ⬅️ your withdraw screen
-        ),
-      );
-    }
-  },
-  child: Container(
-    height: 48,
-    width: 48,
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: const Icon(Icons.add),
-  ),
-),
-
+                          GestureDetector(
+                            onTap: () {
+                              if (widget.type == 'Deposit') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        const DepositFundsScreen(), // ⬅️ your deposit screen
+                                  ),
+                                );
+                              } else if (widget.type == 'Withdraw') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        const WithdrawFundsScreen(), // ⬅️ your withdraw screen
+                                  ),
+                                );
+                              }
+                            },
+                            child: Container(
+                              height: 48,
+                              width: 48,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(Icons.add),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -171,7 +178,9 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                             children: [
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 14),
+                                  horizontal: 12,
+                                  vertical: 14,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(12),
@@ -188,8 +197,11 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                     const CircleAvatar(
                                       backgroundColor: Colors.blue,
                                       radius: 22,
-                                      child: Icon(Icons.account_balance,
-                                          color: Colors.white, size: 20),
+                                      child: Icon(
+                                        Icons.account_balance,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
                                     ),
                                     const SizedBox(width: 12),
                                     Expanded(
@@ -238,8 +250,9 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                     GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          expandedIndex =
-                                              isExpanded ? null : index;
+                                          expandedIndex = isExpanded
+                                              ? null
+                                              : index;
                                         });
                                       },
                                       child: Icon(
@@ -260,7 +273,9 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) =>
-                                            TransactionDetailsScreen(type: widget.type),
+                                            TransactionDetailsScreen(
+                                              type: widget.type,
+                                            ),
                                       ),
                                     );
                                   },
@@ -268,7 +283,9 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                     width: double.infinity,
                                     margin: const EdgeInsets.only(top: 6),
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 16),
+                                      vertical: 10,
+                                      horizontal: 16,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFD32F2F),
                                       borderRadius: BorderRadius.circular(8),
@@ -281,8 +298,10 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                           'Transaction Id: #353367473',
                                           style: TextStyle(color: Colors.white),
                                         ),
-                                        Icon(Icons.arrow_forward,
-                                            color: Colors.white),
+                                        Icon(
+                                          Icons.arrow_forward,
+                                          color: Colors.white,
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -300,7 +319,9 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                       onTap: widget.onBack,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20),
+                          vertical: 10,
+                          horizontal: 20,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(color: Colors.red),
@@ -327,28 +348,25 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
     );
   }
 
-  Widget _buildFilterMenu() {
-    return Container(
-      height: 48,
-      width: 48,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: PopupMenuButton<String>(
-        icon: const Icon(Icons.filter_list),
-        onSelected: (value) {
-          setState(() {
-            selectedFilter = value;
-          });
-        },
-        itemBuilder: (context) => ['Deposit', 'Withdrawal', 'Advance', 'Balance']
-            .map((type) => PopupMenuItem<String>(
-                  value: type,
-                  child: Text(type),
-                ))
-            .toList(),
-      ),
-    );
-  }
+Widget _buildFilterMenu(BuildContext context) {
+  return Container(
+    height: 48,
+    width: 48,
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: IconButton(
+      icon: const Icon(Icons.filter_list),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const DetailFilterScreen(),
+          ),
+        );
+      },
+    ),
+  );
+}
 }
