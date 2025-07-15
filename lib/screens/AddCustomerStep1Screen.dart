@@ -789,12 +789,12 @@ class _TakeSelfieCameraPageState extends State<TakeSelfieCameraPage> {
     super.dispose();
   }
 
-  void _captureSelfie() async {
+  Future<void> _captureSelfie() async {
     try {
       await _initializeControllerFuture;
       final image = await _controller!.takePicture();
-
       if (!mounted) return;
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -802,12 +802,9 @@ class _TakeSelfieCameraPageState extends State<TakeSelfieCameraPage> {
         ),
       );
     } catch (e) {
-      debugPrint('Camera error: $e');
-      if (!mounted) return;
+      debugPrint('Error taking picture: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to capture photo. Please try again.'),
-        ),
+        const SnackBar(content: Text('Camera error. Please try again.')),
       );
     }
   }
@@ -818,28 +815,15 @@ class _TakeSelfieCameraPageState extends State<TakeSelfieCameraPage> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.red[800],
-        automaticallyImplyLeading: true,
-        iconTheme: IconThemeData(color: Colors.white), // Back icon color
-        title: const Text(
-          'Add New Customer',
-          style: TextStyle(color: Colors.white),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              // Notifications screen
-            },
-          ),
-        ],
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text('Add New Customer', style: TextStyle(color: Colors.white)),
       ),
       body: Stack(
         children: [
           FutureBuilder(
             future: _initializeControllerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
-                  _controller != null) {
+            builder: (_, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done && _controller != null) {
                 return CameraPreview(_controller!);
               } else {
                 return const Center(child: CircularProgressIndicator());
@@ -875,12 +859,10 @@ class _TakeSelfieCameraPageState extends State<TakeSelfieCameraPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFB11116),
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
               onPressed: _captureSelfie,
-              child: const Text('Continue', style: TextStyle(fontSize: 18)),
+              child: const Text('Continue', style: TextStyle(fontSize: 18),selectionColor: Colors.white,),
             ),
           ),
         ],
@@ -888,7 +870,6 @@ class _TakeSelfieCameraPageState extends State<TakeSelfieCameraPage> {
     );
   }
 }
-
 class CheckingPhotosPage extends StatefulWidget {
   final String imagePath;
   const CheckingPhotosPage({super.key, required this.imagePath});
@@ -1008,7 +989,7 @@ class VerificationSuccessPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.popUntil(context, (route) => route.isFirst);
                 },
-                child: const Text("Done", style: TextStyle(fontSize: 18)),
+                child: const Text("Done", style: TextStyle(fontSize: 18),selectionColor: Colors.white,),
               ),
             ),
           ),
