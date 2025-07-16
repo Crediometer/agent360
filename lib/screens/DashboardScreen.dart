@@ -1,3 +1,5 @@
+import 'package:agent360/screens/notification_screen.dart';
+import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
 import 'deposit_transaction_screen.dart';
 
@@ -65,10 +67,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       ],
                     ),
-                    child: const Icon(
-                      Icons.notifications_none,
-                      size: 22,
-                      color: Colors.black87,
+                    child: NotificationIconWithBadge(
+                      unreadCount: 1,
+                      iconSize: 22,
+                      iconColor: Colors.black87,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const NotificationScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],

@@ -1,7 +1,9 @@
 import 'package:agent360/screens/CredioReaderScreen.dart';
+import 'package:agent360/screens/notification_screen.dart';
+import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
 import 'secure_payment_screen.dart';
-import 'bank_transfer_screen.dart';// you can create this if needed
+import 'bank_transfer_screen.dart'; // you can create this if needed
 
 class PaymentMethodScreen extends StatefulWidget {
   const PaymentMethodScreen({super.key});
@@ -13,12 +15,7 @@ class PaymentMethodScreen extends StatefulWidget {
 class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   String selectedMethod = 'Cash';
 
-  final List<String> methods = [
-    'Cash',
-    'Card',
-    'Transfer',
-    'Credio Reader',
-  ];
+  final List<String> methods = ['Cash', 'Card', 'Transfer', 'Credio Reader'];
 
   @override
   Widget build(BuildContext context) {
@@ -47,20 +44,18 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                       ),
                     ),
                   ),
-                  Container(
-                    height: 36,
-                    width: 36,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(.15),
-                          blurRadius: 4,
+                  NotificationIconWithBadge(
+                    unreadCount: 1,
+                    iconSize: 24,
+                    iconColor: Colors.black,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationScreen(),
                         ),
-                      ],
-                    ),
-                    child: const Icon(Icons.notifications_none, size: 20),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -78,7 +73,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 8),
-                    ...methods.map((method) => _buildRadioTile(method)).toList(),
+                    ...methods
+                        .map((method) => _buildRadioTile(method))
+                        .toList(),
 
                     const Spacer(),
 
@@ -92,7 +89,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => const SecurePaymentScreen(),
+                                      builder: (_) =>
+                                          const SecurePaymentScreen(),
                                     ),
                                   );
                                   break;
@@ -100,7 +98,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => const BankTransferScreen(),
+                                      builder: (_) =>
+                                          const BankTransferScreen(),
                                     ),
                                   );
                                   break;
@@ -108,13 +107,16 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => const CredioReaderScreen(),
+                                      builder: (_) =>
+                                          const CredioReaderScreen(),
                                     ),
                                   );
                                   break;
                                 case 'Cash':
                                 default:
-                                  Navigator.pop(context); // No screen, just go back
+                                  Navigator.pop(
+                                    context,
+                                  ); // No screen, just go back
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -148,11 +150,11 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                           ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -171,9 +173,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
       ),
       child: Row(
         children: [
-          Expanded(
-            child: Text(label, style: const TextStyle(fontSize: 16)),
-          ),
+          Expanded(child: Text(label, style: const TextStyle(fontSize: 16))),
           Radio<String>(
             value: label,
             groupValue: selectedMethod,
@@ -183,7 +183,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 selectedMethod = val!;
               });
             },
-          )
+          ),
         ],
       ),
     );

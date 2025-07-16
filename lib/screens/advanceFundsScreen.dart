@@ -1,4 +1,6 @@
 import 'package:agent360/screens/AdvanceSuccessScreen.dart';
+import 'package:agent360/screens/notification_screen.dart';
+import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
 
 class AdvanceFundsScreen extends StatefulWidget {
@@ -33,10 +35,10 @@ class _AdvanceFundsScreenState extends State<AdvanceFundsScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
-                children: const [
-                  BackButton(color: Colors.white),
-                  SizedBox(width: 8),
-                  Text(
+                children: [
+                  const BackButton(color: Colors.white),
+                  const SizedBox(width: 8),
+                  const Text(
                     'Advance Funds',
                     style: TextStyle(
                       color: Colors.white,
@@ -44,11 +46,24 @@ class _AdvanceFundsScreenState extends State<AdvanceFundsScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Spacer(),
-                  Icon(Icons.notifications_none, color: Colors.white),
+                  const Spacer(),
+                  NotificationIconWithBadge(
+                    unreadCount: 1,
+                    iconSize: 24,
+                    iconColor: Colors.black,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationScreen(),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
+
             // → White Card
             Expanded(
               child: Container(

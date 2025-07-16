@@ -1,4 +1,6 @@
 import 'package:agent360/screens/WithdrawalPaymentMethodScreen.dart';
+import 'package:agent360/screens/notification_screen.dart';
+import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
 
 class WithdrawFundsScreen extends StatefulWidget {
@@ -45,20 +47,18 @@ class _WithdrawFundsScreenState extends State<WithdrawFundsScreen> {
                       ),
                     ),
                   ),
-                  Container(
-                    height: 36,
-                    width: 36,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(.15),
-                          blurRadius: 4,
+                  NotificationIconWithBadge(
+                    unreadCount: 1,
+                    iconSize: 24,
+                    iconColor: Colors.black,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationScreen(),
                         ),
-                      ],
-                    ),
-                    child: const Icon(Icons.notifications_none, size: 20),
+                      );
+                    },
                   ),
                 ],
               ),

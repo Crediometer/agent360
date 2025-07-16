@@ -1,4 +1,6 @@
 import 'package:agent360/screens/CredioReaderScreen.dart';
+import 'package:agent360/screens/notification_screen.dart';
+import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
 import 'bank_transfer_screen.dart';
 // import 'credio_reader_screen.dart';
@@ -7,17 +9,15 @@ class WithdrawalPaymentMethodScreen extends StatefulWidget {
   const WithdrawalPaymentMethodScreen({super.key});
 
   @override
-  State<WithdrawalPaymentMethodScreen> createState() => _WithdrawalPaymentMethodScreenState();
+  State<WithdrawalPaymentMethodScreen> createState() =>
+      _WithdrawalPaymentMethodScreenState();
 }
 
-class _WithdrawalPaymentMethodScreenState extends State<WithdrawalPaymentMethodScreen> {
+class _WithdrawalPaymentMethodScreenState
+    extends State<WithdrawalPaymentMethodScreen> {
   String selectedMethod = 'Cash';
 
-  final List<String> methods = [
-    'Cash',
-    'Transfer',
-    'Credio Reader',
-  ];
+  final List<String> methods = ['Cash', 'Transfer', 'Credio Reader'];
 
   @override
   Widget build(BuildContext context) {
@@ -46,20 +46,18 @@ class _WithdrawalPaymentMethodScreenState extends State<WithdrawalPaymentMethodS
                       ),
                     ),
                   ),
-                  Container(
-                    height: 36,
-                    width: 36,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(.15),
-                          blurRadius: 4,
+                  NotificationIconWithBadge(
+                    unreadCount: 1,
+                    iconSize: 24,
+                    iconColor: Colors.black,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationScreen(),
                         ),
-                      ],
-                    ),
-                    child: const Icon(Icons.notifications_none, size: 20),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -77,7 +75,9 @@ class _WithdrawalPaymentMethodScreenState extends State<WithdrawalPaymentMethodS
                 child: Column(
                   children: [
                     const SizedBox(height: 8),
-                    ...methods.map((method) => _buildRadioTile(method)).toList(),
+                    ...methods
+                        .map((method) => _buildRadioTile(method))
+                        .toList(),
 
                     const Spacer(),
 
@@ -91,7 +91,8 @@ class _WithdrawalPaymentMethodScreenState extends State<WithdrawalPaymentMethodS
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => const BankTransferScreen(),
+                                      builder: (_) =>
+                                          const BankTransferScreen(),
                                     ),
                                   );
                                   break;
@@ -99,7 +100,8 @@ class _WithdrawalPaymentMethodScreenState extends State<WithdrawalPaymentMethodS
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => const CredioReaderScreen(),
+                                      builder: (_) =>
+                                          const CredioReaderScreen(),
                                     ),
                                   );
                                   break;
@@ -139,11 +141,11 @@ class _WithdrawalPaymentMethodScreenState extends State<WithdrawalPaymentMethodS
                           ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -162,9 +164,7 @@ class _WithdrawalPaymentMethodScreenState extends State<WithdrawalPaymentMethodS
       ),
       child: Row(
         children: [
-          Expanded(
-            child: Text(label, style: const TextStyle(fontSize: 16)),
-          ),
+          Expanded(child: Text(label, style: const TextStyle(fontSize: 16))),
           Radio<String>(
             value: label,
             groupValue: selectedMethod,
@@ -174,7 +174,7 @@ class _WithdrawalPaymentMethodScreenState extends State<WithdrawalPaymentMethodS
                 selectedMethod = val!;
               });
             },
-          )
+          ),
         ],
       ),
     );

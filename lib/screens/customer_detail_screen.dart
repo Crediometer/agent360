@@ -1,5 +1,7 @@
 // customer_detail_screen.dart
 import 'package:agent360/screens/CustomerListScreen.dart';
+import 'package:agent360/screens/notification_screen.dart';
+import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -28,9 +30,18 @@ class CustomerDetailScreen extends StatelessWidget {
                     child: const Icon(Icons.arrow_back, size: 24),
                     onTap: () => Navigator.pop(context),
                   ),
-                  InkWell(
-                    child: const Icon(Icons.notifications_none, size: 24),
-                    onTap: () {},
+                  NotificationIconWithBadge(
+                    unreadCount: 1,
+                    iconSize: 24,
+                    iconColor: Colors.black,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -240,66 +251,82 @@ class CustomerDetailScreen extends StatelessWidget {
                 ],
               ),
             ),
-        const SizedBox(height: 12),
-Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-  child: Align(
-    alignment: Alignment.centerLeft,
-    child: Text("Recent Transactions",
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-  ),
-),
-const SizedBox(height: 8),
-Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 16),
-  child: Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12),
-      boxShadow: const [
-        BoxShadow(
-          color: Colors.black12,
-          blurRadius: 4,
-          offset: Offset(0, 2),
-        )
-      ],
-    ),
-    child: Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Type", style: TextStyle(fontWeight: FontWeight.bold)),
-              Text("Date", style: TextStyle(fontWeight: FontWeight.bold)),
-              Text("Amount", style: TextStyle(fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
-        const Divider(height: 1),
-        TransactionRow(
-          type: "First Income",
-          date: "01/01/2025",
-          amount: "+60.000",
-          color: Colors.green,
-        ),
-        TransactionRow(
-          type: "Withdrawal",
-          date: "01/01/2025",
-          amount: "-129.833",
-          color: Colors.red,
-        ),
-        const Divider(height: 1),
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 12),
-          child: Text("See all", style: TextStyle(color: Colors.blue)),
-        )
-      ],
-    ),
-  ),
-),
-
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Recent Transactions",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 12,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Type",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "Date",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "Amount",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    TransactionRow(
+                      type: "First Income",
+                      date: "01/01/2025",
+                      amount: "+60.000",
+                      color: Colors.green,
+                    ),
+                    TransactionRow(
+                      type: "Withdrawal",
+                      date: "01/01/2025",
+                      amount: "-129.833",
+                      color: Colors.red,
+                    ),
+                    const Divider(height: 1),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Text(
+                        "See all",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -400,4 +427,3 @@ class TransactionRow extends StatelessWidget {
     );
   }
 }
-

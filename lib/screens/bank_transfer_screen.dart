@@ -1,3 +1,5 @@
+import 'package:agent360/screens/notification_screen.dart';
+import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -9,9 +11,15 @@ class BankTransferScreen extends StatefulWidget {
 }
 
 class _BankTransferScreenState extends State<BankTransferScreen> {
-  final TextEditingController _accountNumberController = TextEditingController(text: '1234567890');
-  final TextEditingController _bankNameController = TextEditingController(text: 'Zenith Bank');
-  final TextEditingController _accountNameController = TextEditingController(text: 'John Doe Enterprises');
+  final TextEditingController _accountNumberController = TextEditingController(
+    text: '1234567890',
+  );
+  final TextEditingController _bankNameController = TextEditingController(
+    text: 'Zenith Bank',
+  );
+  final TextEditingController _accountNameController = TextEditingController(
+    text: 'John Doe Enterprises',
+  );
 
   Timer? _timer;
   int _remainingSeconds = 20 * 60; // 20 minutes
@@ -60,20 +68,25 @@ class _BankTransferScreenState extends State<BankTransferScreen> {
                   const Expanded(
                     child: Text(
                       'Bank Transfer',
-                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                  Container(
-                    height: 36,
-                    width: 36,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(.15), blurRadius: 4),
-                      ],
-                    ),
-                    child: const Icon(Icons.notifications_none, size: 20),
+                  NotificationIconWithBadge(
+                    unreadCount: 1,
+                    iconSize: 20,
+                    iconColor: Colors.black,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -106,13 +119,21 @@ class _BankTransferScreenState extends State<BankTransferScreen> {
                     // Timer
                     Row(
                       children: [
-                        const Text('I have', style: TextStyle(fontWeight: FontWeight.w600)),
+                        const Text(
+                          'I have',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
                         const Spacer(),
                         Column(
                           children: [
                             AnimatedCircularTimer(seconds: _remainingSeconds),
                             const SizedBox(height: 8),
-                            Text(_formattedRemaining, style: const TextStyle(fontWeight: FontWeight.bold)),
+                            Text(
+                              _formattedRemaining,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -127,7 +148,9 @@ class _BankTransferScreenState extends State<BankTransferScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFD32F2F),
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                       child: const Text(
                         'I have transferred',
@@ -155,9 +178,18 @@ class _BankTransferScreenState extends State<BankTransferScreen> {
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Colors.black)),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Colors.black)),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 14,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Colors.black),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Colors.black),
+            ),
           ),
         ),
       ],

@@ -1,7 +1,9 @@
 import 'package:agent360/screens/TransactionDetailsScreen.dart';
 import 'package:agent360/screens/deposit_funds_screen.dart';
 import 'package:agent360/screens/filter-screens-for-deposit.dart';
+import 'package:agent360/screens/notification_screen.dart';
 import 'package:agent360/screens/withdraw_funds_screen.dart';
+import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
 import 'transaction_detail_filter_screen.dart';
 
@@ -70,7 +72,19 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                       ),
                     ),
                   ),
-                  const Icon(Icons.notifications_none, color: Colors.white),
+                  NotificationIconWithBadge(
+                    unreadCount: 1,
+                    iconSize: 24,
+                    iconColor: Colors.black,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationScreen(),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -348,25 +362,23 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
     );
   }
 
-Widget _buildFilterMenu(BuildContext context) {
-  return Container(
-    height: 48,
-    width: 48,
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: IconButton(
-      icon: const Icon(Icons.filter_list),
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const DetailFilterScreen(),
-          ),
-        );
-      },
-    ),
-  );
-}
+  Widget _buildFilterMenu(BuildContext context) {
+    return Container(
+      height: 48,
+      width: 48,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: IconButton(
+        icon: const Icon(Icons.filter_list),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const DetailFilterScreen()),
+          );
+        },
+      ),
+    );
+  }
 }

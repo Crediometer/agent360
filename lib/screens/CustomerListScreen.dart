@@ -1,3 +1,5 @@
+import 'package:agent360/screens/notification_screen.dart';
+import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
 import 'customer_detail_screen.dart';
 
@@ -10,13 +12,28 @@ class Customer {
 
 class CustomerListScreen extends StatelessWidget {
   final List<Customer> customers = [
-    Customer(name: "Aliyu Adebayo", imageUrl: "https://i.pravatar.cc/100?img=1"),
+    Customer(
+      name: "Aliyu Adebayo",
+      imageUrl: "https://i.pravatar.cc/100?img=1",
+    ),
     Customer(name: "Saratu Ali", imageUrl: "https://i.pravatar.cc/100?img=2"),
     Customer(name: "Joseph Brown", imageUrl: "https://i.pravatar.cc/100?img=3"),
-    Customer(name: "Abayomi Abubakar", imageUrl: "https://i.pravatar.cc/100?img=4"),
-    Customer(name: "Samuel Williams", imageUrl: "https://i.pravatar.cc/100?img=5"),
-    Customer(name: "Ijeoma Agwuegbo", imageUrl: "https://i.pravatar.cc/100?img=6"),
-    Customer(name: "Nnamdi Akintola", imageUrl: "https://i.pravatar.cc/100?img=7"),
+    Customer(
+      name: "Abayomi Abubakar",
+      imageUrl: "https://i.pravatar.cc/100?img=4",
+    ),
+    Customer(
+      name: "Samuel Williams",
+      imageUrl: "https://i.pravatar.cc/100?img=5",
+    ),
+    Customer(
+      name: "Ijeoma Agwuegbo",
+      imageUrl: "https://i.pravatar.cc/100?img=6",
+    ),
+    Customer(
+      name: "Nnamdi Akintola",
+      imageUrl: "https://i.pravatar.cc/100?img=7",
+    ),
   ];
 
   @override
@@ -38,12 +55,18 @@ class CustomerListScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(
-                    Icons.notifications_none,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {},
+                NotificationIconWithBadge(
+                  unreadCount: 1,
+                  iconSize: 24,
+                  iconColor: Colors.black,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const NotificationScreen(),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -111,7 +134,8 @@ class CustomerListScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => CustomerDetailScreen(customer: customer),
+                            builder: (_) =>
+                                CustomerDetailScreen(customer: customer),
                           ),
                         );
                       },

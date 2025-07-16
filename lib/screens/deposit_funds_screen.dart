@@ -1,5 +1,7 @@
+import 'package:agent360/screens/notification_screen.dart';
 import 'package:agent360/screens/payment_method_screen.dart';
 import 'package:agent360/screens/secure_payment_screen.dart';
+import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
 
 class DepositFundsScreen extends StatefulWidget {
@@ -45,20 +47,19 @@ class _DepositFundsScreenState extends State<DepositFundsScreen> {
                       ),
                     ),
                   ),
-                  Container(
-                    height: 36,
-                    width: 36,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(.15),
-                          blurRadius: 4,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationScreen(),
                         ),
-                      ],
+                      );
+                    },
+                    child: NotificationIconWithBadge(
+                      unreadCount: 1,
+                      iconSize: 20,
                     ),
-                    child: const Icon(Icons.notifications_none, size: 20),
                   ),
                 ],
               ),

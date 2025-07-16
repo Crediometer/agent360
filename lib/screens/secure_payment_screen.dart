@@ -1,3 +1,5 @@
+import 'package:agent360/screens/notification_screen.dart';
+import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
 
 class SecurePaymentScreen extends StatefulWidget {
@@ -39,20 +41,25 @@ class _SecurePaymentScreenState extends State<SecurePaymentScreen> {
                   const Expanded(
                     child: Text(
                       'Secure payment',
-                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                  Container(
-                    height: 36,
-                    width: 36,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(.15), blurRadius: 4),
-                      ],
-                    ),
-                    child: const Icon(Icons.notifications_none, size: 20),
+                  NotificationIconWithBadge(
+                    unreadCount: 1,
+                    iconSize: 24,
+                    iconColor: Colors.black,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -71,18 +78,34 @@ class _SecurePaymentScreenState extends State<SecurePaymentScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _buildInputField('Card number', _cardNumberController, hint: '4539 7185 2346 9012'),
+                      _buildInputField(
+                        'Card number',
+                        _cardNumberController,
+                        hint: '4539 7185 2346 9012',
+                      ),
                       const SizedBox(height: 16),
-                      _buildInputField('Card holder’s name', _cardNameController, hint: 'Ijeoma Agwuegbo'),
+                      _buildInputField(
+                        'Card holder’s name',
+                        _cardNameController,
+                        hint: 'Ijeoma Agwuegbo',
+                      ),
                       const SizedBox(height: 16),
                       Row(
                         children: [
                           Expanded(
-                            child: _buildInputField('Expiration date', _expiryController, hint: 'MM/YY'),
+                            child: _buildInputField(
+                              'Expiration date',
+                              _expiryController,
+                              hint: 'MM/YY',
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
-                            child: _buildInputField('CVV', _cvvController, hint: '837'),
+                            child: _buildInputField(
+                              'CVV',
+                              _cvvController,
+                              hint: '837',
+                            ),
                           ),
                         ],
                       ),
@@ -91,15 +114,24 @@ class _SecurePaymentScreenState extends State<SecurePaymentScreen> {
                         children: [
                           Expanded(
                             child: ElevatedButton(
-                              onPressed: _isFormValid ? () {
-                                // handle payment
-                              } : null,
+                              onPressed: _isFormValid
+                                  ? () {
+                                      // handle payment
+                                    }
+                                  : null,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF007136),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
                               ),
-                              child: const Text('Pay now', style: TextStyle(fontSize: 16)),
+                              child: const Text(
+                                'Pay now',
+                                style: TextStyle(fontSize: 16),
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -108,10 +140,17 @@ class _SecurePaymentScreenState extends State<SecurePaymentScreen> {
                               onPressed: () => Navigator.pop(context),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF9E9E9E),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
                               ),
-                              child: const Text('Cancel', style: TextStyle(fontSize: 16)),
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(fontSize: 16),
+                              ),
                             ),
                           ),
                         ],
@@ -127,7 +166,11 @@ class _SecurePaymentScreenState extends State<SecurePaymentScreen> {
     );
   }
 
-  Widget _buildInputField(String label, TextEditingController ctrl, {String? hint}) {
+  Widget _buildInputField(
+    String label,
+    TextEditingController ctrl, {
+    String? hint,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -140,9 +183,18 @@ class _SecurePaymentScreenState extends State<SecurePaymentScreen> {
             hintText: hint,
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Colors.black)),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Colors.black)),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 14,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Colors.black),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Colors.black),
+            ),
           ),
         ),
       ],

@@ -1,3 +1,5 @@
+import 'package:agent360/screens/notification_screen.dart';
+import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:path_provider/path_provider.dart';
@@ -30,12 +32,19 @@ class AddCustomerStep1Screen extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              // Notifications screen
-            },
-          ),
+    NotificationIconWithBadge(
+  unreadCount: 1,
+  iconSize: 24,
+  iconColor: Colors.black,
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const NotificationScreen()),
+    );
+  },
+),
+
+
         ],
       ),
 
@@ -134,12 +143,18 @@ class _AddCustomerStep2ScreenState extends State<AddCustomerStep2Screen> {
           style: TextStyle(color: Colors.white),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              // Notifications screen
-            },
-          ),
+          NotificationIconWithBadge(
+  unreadCount: 1,
+  iconSize: 24,
+  iconColor: Colors.white,
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const NotificationScreen()),
+    );
+  },
+),
+
         ],
       ),
       body: Column(
@@ -260,12 +275,18 @@ class _VerificationInfoScreenState extends State<VerificationInfoScreen> {
           style: TextStyle(color: Colors.white),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              // Notifications screen
-            },
-          ),
+          NotificationIconWithBadge(
+  unreadCount: 1,
+  iconSize: 24,
+  iconColor: Colors.white,
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const NotificationScreen()),
+    );
+  },
+),
+
         ],
       ),
       body: Column(
@@ -359,12 +380,18 @@ class IdentityVerificationIntroScreen extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              // Notifications screen
-            },
-          ),
+          NotificationIconWithBadge(
+  unreadCount: 1,
+  iconSize: 24,
+  iconColor: Colors.white,
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const NotificationScreen()),
+    );
+  },
+),
+
         ],
       ),
       body: Column(
@@ -467,12 +494,18 @@ Widget buildOption(String text) {
           style: TextStyle(color: Colors.white),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              // Notifications screen
-            },
-          ),
+          NotificationIconWithBadge(
+  unreadCount: 1,
+  iconSize: 24,
+  iconColor: Colors.white,
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const NotificationScreen()),
+    );
+  },
+),
+
         ],
       ),
       body: Column(
@@ -639,12 +672,18 @@ class ImagePreviewScreen extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              // Notifications screen
-            },
-          ),
+          NotificationIconWithBadge(
+  unreadCount: 1,
+  iconSize: 24,
+  iconColor: Colors.white,
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const NotificationScreen()),
+    );
+  },
+),
+
         ],
       ),
       body: Column(
@@ -690,12 +729,18 @@ class TakeSelfieIntroPage extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              // Notifications screen
-            },
-          ),
+          NotificationIconWithBadge(
+  unreadCount: 1,
+  iconSize: 24,
+  iconColor: Colors.white,
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const NotificationScreen()),
+    );
+  },
+),
+
         ],
       ),
       body: Column(
