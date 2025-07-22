@@ -20,6 +20,10 @@ class _DepositFundsScreenState extends State<DepositFundsScreen> {
   final List<String> customers = ['Customer A', 'Customer B', 'Customer C'];
   final List<String> quickAmounts = ['₦500', '₦1 000', '₦1 500', '₦5 000'];
 
+  void _updateIncome() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,34 +84,61 @@ class _DepositFundsScreenState extends State<DepositFundsScreen> {
                     const SizedBox(height: 24),
 
                     // Editable amount field
-                    TextField(
-                      controller: _amountController,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: _amountController.text.isEmpty
-                            ? const Color(0xFFA5A5A5)
-                            : Colors.black,
-                      ),
-                      onChanged: (_) {
-                        setState(() {});
-                      },
-                      keyboardType: TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      decoration: const InputDecoration(
-                        hintText: '₦ 0.000',
-                        hintStyle: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFA5A5A5),
-                        ),
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: EdgeInsets.symmetric(vertical: 8),
-                      ),
-                    ),
+                 Stack(
+  alignment: Alignment.center,
+  children: [
+    TextField(
+      controller: _amountController,
+      keyboardType: TextInputType.numberWithOptions(decimal: true),
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        fontSize: 32,
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
+      ),
+      decoration: const InputDecoration(
+        hintText: '0.00',
+        hintStyle: TextStyle(
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFFA5A5A5),
+        ),
+        border: InputBorder.none,
+        isDense: true,
+        contentPadding: EdgeInsets.symmetric(vertical: 8),
+      ),
+      onChanged: (_) => _updateIncome(),
+    ),
+    IgnorePointer(
+      child: Align(
+        alignment: Alignment.center,
+        child: RichText(
+          text: TextSpan(
+            style: const TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+            ),
+            children: [
+              const TextSpan(
+                text: '₦ ',
+                style: TextStyle(color: Colors.black),
+              ),
+              TextSpan(
+                text: _amountController.text.isEmpty
+                    ? '0.00'
+                    : _amountController.text,
+                style: const TextStyle(
+                  color: Colors.transparent,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  ],
+),
+
 
                     const SizedBox(height: 28),
 
@@ -183,8 +214,17 @@ class _DepositFundsScreenState extends State<DepositFundsScreen> {
                       children: quickAmounts.map((amt) {
                         final isSelected = selectedQuickAmount == amt;
                         return GestureDetector(
-                          onTap: () =>
-                              setState(() => selectedQuickAmount = amt),
+                          onTap: () {
+                            setState(() {
+                              selectedQuickAmount = amt;
+                              final numericValue = amt.replaceAll(
+                                RegExp(r'[^\d.]'),
+                                '',
+                              );
+                              _amountController.text = numericValue;
+                            });
+                          },
+
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 10,

@@ -27,11 +27,24 @@ class AgentProfilePage extends StatelessWidget {
             child: Stack(
               alignment: Alignment.bottomRight,
               children: [
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(
-                    'https://via.placeholder.com/150', // Replace with real photo
-                  ),
+                Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    const CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(
+                        'https://via.placeholder.com/150',
+                      ),
+                    ),
+                    Positioned(
+                      top: 4,
+                      right: 4,
+                      child: CircleAvatar(
+                        radius: 8,
+                        backgroundColor: Colors.green, // Change based on status
+                      ),
+                    ),
+                  ],
                 ),
                 CircleAvatar(
                   radius: 14,
@@ -41,6 +54,7 @@ class AgentProfilePage extends StatelessWidget {
               ],
             ),
           ),
+
           const SizedBox(height: 12),
           Center(
             child: Column(
@@ -88,110 +102,8 @@ class AgentProfilePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          ExpansionTile(
-            title: const Text(
-              "Cumulative Income",
-              style: TextStyle(fontWeight: FontWeight.w600),
-            ),
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 8,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "22.373",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      height: 200,
-                      child: LineChart(
-                        LineChartData(
-                          gridData: FlGridData(show: true),
-                          titlesData: FlTitlesData(
-                            leftTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                interval: 10,
-                                reservedSize: 28,
-                              ),
-                            ),
-                            bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                getTitlesWidget: (value, meta) {
-                                  const days = [
-                                    'Sun',
-                                    'Mon',
-                                    'Tue',
-                                    'Wed',
-                                    'Thu',
-                                    'Fri',
-                                    'Sat',
-                                  ];
-                                  return Text(
-                                    days[value.toInt() % 7],
-                                    style: const TextStyle(fontSize: 12),
-                                  );
-                                },
-                                interval: 1,
-                              ),
-                            ),
-                            rightTitles: AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            topTitles: AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                          ),
-                          borderData: FlBorderData(show: true),
-                          minX: 0,
-                          maxX: 6,
-                          minY: 0,
-                          maxY: 25,
-                          lineBarsData: [
-                            LineChartBarData(
-                              spots: const [
-                                FlSpot(0, 5),
-                                FlSpot(1, 7),
-                                FlSpot(2, 10),
-                                FlSpot(3, 15),
-                                FlSpot(4, 12),
-                                FlSpot(5, 11),
-                                FlSpot(6, 13),
-                              ],
-                              isCurved: true,
-                              barWidth: 3,
-                              color: Colors.blue,
-                              dotData: FlDotData(show: true),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _timeRangeChip("1W", true),
-                        _timeRangeChip("1M", false),
-                        _timeRangeChip("6M", false),
-                        _timeRangeChip("1Y", false),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-                ),
-              ),
-            ],
-          ),
+        const CumulativeIncomeTile(),
+
 
           ExpansionTile(
             title: const Text(
@@ -637,7 +549,6 @@ Widget _uploadedFileTile({
   );
 }
 
-
 void _showLogoutDialog(BuildContext context) {
   showDialog(
     context: context,
@@ -652,10 +563,7 @@ void _showLogoutDialog(BuildContext context) {
             const SizedBox(height: 16),
             const Text(
               "You’re leaving.. Are you sure?",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -711,4 +619,161 @@ void _showLogoutDialog(BuildContext context) {
       );
     },
   );
+}
+
+
+
+class CumulativeIncomeTile extends StatefulWidget {
+  const CumulativeIncomeTile({super.key});
+
+  @override
+  State<CumulativeIncomeTile> createState() => _CumulativeIncomeTileState();
+}
+
+class _CumulativeIncomeTileState extends State<CumulativeIncomeTile> {
+  String selectedRange = "1W";
+
+  List<FlSpot> get chartData {
+    switch (selectedRange) {
+      case "1M":
+        return const [
+          FlSpot(0, 8),
+          FlSpot(1, 12),
+          FlSpot(2, 9),
+          FlSpot(3, 14),
+          FlSpot(4, 17),
+          FlSpot(5, 18),
+          FlSpot(6, 20),
+        ];
+      case "6M":
+        return const [
+          FlSpot(0, 5),
+          FlSpot(1, 10),
+          FlSpot(2, 15),
+          FlSpot(3, 12),
+          FlSpot(4, 20),
+          FlSpot(5, 23),
+          FlSpot(6, 25),
+        ];
+      case "1Y":
+        return const [
+          FlSpot(0, 2),
+          FlSpot(1, 4),
+          FlSpot(2, 6),
+          FlSpot(3, 10),
+          FlSpot(4, 15),
+          FlSpot(5, 18),
+          FlSpot(6, 22),
+        ];
+      default:
+        return const [
+          FlSpot(0, 5),
+          FlSpot(1, 7),
+          FlSpot(2, 10),
+          FlSpot(3, 15),
+          FlSpot(4, 12),
+          FlSpot(5, 11),
+          FlSpot(6, 13),
+        ];
+    }
+  }
+
+  Widget _timeRangeChip(String label) {
+    final selected = label == selectedRange;
+    return ChoiceChip(
+      label: Text(label),
+      selected: selected,
+      onSelected: (_) {
+        setState(() => selectedRange = label);
+      },
+      selectedColor: Colors.blue,
+      labelStyle: TextStyle(color: selected ? Colors.white : Colors.black),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      title: const Text(
+        "Cumulative Income",
+        style: TextStyle(fontWeight: FontWeight.w600),
+      ),
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "₦22,373",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 200,
+                child: LineChart(
+                  LineChartData(
+                    gridData: FlGridData(show: true),
+                    titlesData: FlTitlesData(
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          interval: 5,
+                          reservedSize: 32,
+                          getTitlesWidget: (value, _) => Text('₦${value.toInt()}'),
+                        ),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) {
+                            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                            return Text(
+                              days[value.toInt() % 7],
+                              style: const TextStyle(fontSize: 12),
+                            );
+                          },
+                          interval: 1,
+                        ),
+                      ),
+                      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    ),
+                    borderData: FlBorderData(show: true),
+                    minX: 0,
+                    maxX: 6,
+                    minY: 0,
+                    maxY: 25,
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: chartData,
+                        isCurved: true,
+                        barWidth: 3,
+                        color: Colors.blue,
+                        dotData: FlDotData(show: true),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _timeRangeChip("1W"),
+                  _timeRangeChip("1M"),
+                  _timeRangeChip("6M"),
+                  _timeRangeChip("1Y"),
+                ],
+              ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }

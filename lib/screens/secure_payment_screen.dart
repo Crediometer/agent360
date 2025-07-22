@@ -1,3 +1,4 @@
+import 'package:agent360/screens/TransactionSuccessScreenUI.dart';
 import 'package:agent360/screens/notification_screen.dart';
 import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +16,34 @@ class _SecurePaymentScreenState extends State<SecurePaymentScreen> {
   final TextEditingController _expiryController = TextEditingController();
   final TextEditingController _cvvController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+
+    _cardNumberController.addListener(_onFormChanged);
+    _cardNameController.addListener(_onFormChanged);
+    _expiryController.addListener(_onFormChanged);
+    _cvvController.addListener(_onFormChanged);
+  }
+
+  void _onFormChanged() {
+    setState(() {});
+  }
+
   bool get _isFormValid =>
       _cardNumberController.text.isNotEmpty &&
       _cardNameController.text.isNotEmpty &&
       _expiryController.text.isNotEmpty &&
       _cvvController.text.isNotEmpty;
+
+  @override
+  void dispose() {
+    _cardNumberController.dispose();
+    _cardNameController.dispose();
+    _expiryController.dispose();
+    _cvvController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +140,27 @@ class _SecurePaymentScreenState extends State<SecurePaymentScreen> {
                             child: ElevatedButton(
                               onPressed: _isFormValid
                                   ? () {
-                                      // handle payment
+                                      final amount = 0.0;
+
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              TransactionSuccessUIScreen(
+                                            title: 'Payment Successful',
+                                            message:
+                                                'Thank you for your transaction!',
+                                            amount: amount,
+                                            onDone: () {
+                                              Navigator.pushNamedAndRemoveUntil(
+                                                context,
+                                                '/dashboard',
+                                                (_) => false,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      );
                                     }
                                   : null,
                               style: ElevatedButton.styleFrom(

@@ -60,37 +60,46 @@ class _LoginScreenState extends State<LoginScreen> {
         Container(
           width: 91,
           height: 79,
-          decoration: const BoxDecoration(
-            color: Color(0xFF9B1919),
+          decoration: BoxDecoration(
+            color: const Color(0xFFA61111),
             shape: BoxShape.circle,
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: const [
-              Positioned(
-                left: 20,
-                child: Text(
-                  'a',
-                  style: TextStyle(
-                    fontSize: 40,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Positioned(
-                right: 20,
-                top: 22,
-                child: Text(
-                  '360',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
               ),
             ],
+          ),
+          child: Center(
+            child: Stack(
+              alignment: Alignment.center,
+              children: const [
+                Positioned(
+                  left: 10,
+                  child: Text(
+                    'a',
+                    style: TextStyle(
+                      fontSize: 42,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  right: 25,
+                  top: 25,
+                  child: Text(
+                    '360',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         const SizedBox(width: 12),
@@ -128,13 +137,14 @@ class _LoginScreenState extends State<LoginScreen> {
           label,
           style: const TextStyle(
             fontSize: 13,
-            fontWeight: FontWeight.bold, // Bold label
+            fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 6),
         TextField(
           controller: controller,
           obscureText: isObscure,
+          style: const TextStyle(color: Colors.black), // ✅ Text color #000000
           decoration: InputDecoration(
             hintText: hint,
             contentPadding: const EdgeInsets.symmetric(
@@ -152,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: const BorderSide(
-                color: Color(0xFFD32F2F), // Brighter color on focus
+                color: Color(0xFFD32F2F),
                 width: 2,
               ),
             ),
@@ -167,6 +177,36 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: togglePassword,
                   )
                 : null,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOfflineToggle() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: const [
+            Text('Offline', style: TextStyle(fontSize: 10)),
+            Text('mode', style: TextStyle(fontSize: 10)),
+          ],
+        ),
+        const SizedBox(width: 8),
+        Transform.scale(
+          scale: 0.8,
+          child: Switch(
+            value: _offlineMode,
+            onChanged: (val) {
+              setState(() {
+                _offlineMode = val;
+              });
+            },
+            activeColor: const Color(0xFFA61111), // Match splash circle
+            inactiveThumbColor: Colors.grey[400],
+            inactiveTrackColor: Colors.grey[300],
           ),
         ),
       ],
@@ -227,10 +267,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           });
                         }
                       : null,
-
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isFormValid
-                        ? const Color(0xFF9B1919)
+                        ? const Color(0xFFA61111)
                         : Colors.grey[400],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
@@ -264,28 +303,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: const [
-                      Text('Offline', style: TextStyle(fontSize: 10)),
-                      Text('mode', style: TextStyle(fontSize: 10)),
-                    ],
-                  ),
-                  const SizedBox(width: 8),
-                  Switch(
-                    value: _offlineMode,
-                    onChanged: (val) {
-                      setState(() {
-                        _offlineMode = val;
-                      });
-                    },
-                    activeColor: const Color(0xFF9B1919),
-                  ),
-                ],
-              ),
+              _buildOfflineToggle(),
               const SizedBox(height: 20),
             ],
           ),

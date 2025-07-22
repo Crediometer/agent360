@@ -1,15 +1,6 @@
 import 'package:agent360/screens/Auth/NewPasswordScreen.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(
-    const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ResetPasswordScreen(),
-    ),
-  );
-}
-
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
 
@@ -19,10 +10,7 @@ class ResetPasswordScreen extends StatefulWidget {
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
-  final List<TextEditingController> _controllers = List.generate(
-    4,
-    (_) => TextEditingController(),
-  );
+  final List<TextEditingController> _controllers = List.generate(4, (_) => TextEditingController());
 
   void _onChanged(String value, int index) {
     if (value.isNotEmpty && index < 3) {
@@ -30,12 +18,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     } else if (value.isEmpty && index > 0) {
       _focusNodes[index - 1].requestFocus();
     }
-  }
-
-  void _submitCode() {
-    final code = _controllers.map((controller) => controller.text).join();
-    // TODO: Submit the code to your backend.
-    print("Entered Code: $code");
   }
 
   @override
@@ -85,6 +67,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             const Text(
               'Reset password',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             const Text(
@@ -103,8 +86,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 const Text("Didn't get the code? "),
                 GestureDetector(
                   onTap: () {
-                    // TODO: Implement resend logic
-                    print("Resend tapped");
+                    // TODO: Resend logic
                   },
                   child: const Text(
                     'Resend',
@@ -120,22 +102,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => const NewPasswordScreen(),
-                    ),
+                    MaterialPageRoute(builder: (_) => const NewPasswordScreen()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[700],
+                  backgroundColor: const Color(0xFFA61111),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: const Text('Submit', style: TextStyle(fontSize: 16,color: Colors.white,)),
+                child: const Text(
+                  'Submit',
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
               ),
             ),
-
             const SizedBox(height: 24),
           ],
         ),

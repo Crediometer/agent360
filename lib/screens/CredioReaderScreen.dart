@@ -12,8 +12,6 @@ class CredioReaderScreen extends StatelessWidget {
   }
 }
 
-
-
 class StepProgress extends StatelessWidget {
   final int currentStep;
   const StepProgress({super.key, required this.currentStep});
@@ -22,7 +20,7 @@ class StepProgress extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(3, (i) {
+      children: List.generate(4, (i) {
         bool active = i == currentStep;
         bool done = i < currentStep;
         return Row(
@@ -32,7 +30,12 @@ class StepProgress extends StatelessWidget {
               color: done || active ? Colors.green : Colors.grey.shade400,
               size: 20,
             ),
-            if (i < 2) Container(width: 24, height: 2, color: done ? Colors.green : Colors.grey.shade400),
+            if (i < 3)
+              Container(
+                width: 24,
+                height: 2,
+                color: done ? Colors.green : Colors.grey.shade400,
+              ),
           ],
         );
       }),
@@ -65,7 +68,9 @@ class BaseScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(title, style: const TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFFD32F2F),
-        leading: Navigator.canPop(context) ? const BackButton(color: Colors.white) : null,
+        leading: Navigator.canPop(context)
+            ? const BackButton(color: Colors.white)
+            : null,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(40),
           child: Padding(
@@ -104,31 +109,30 @@ class BaseScreen extends StatelessWidget {
   }
 }
 
-
 class ConnectionStatusIndicator extends StatefulWidget {
   final bool isConnected;
   const ConnectionStatusIndicator({super.key, required this.isConnected});
-
   @override
-  _ConnectionStatusIndicatorState createState() => _ConnectionStatusIndicatorState();
+  _ConnectionStatusIndicatorState createState() =>
+      _ConnectionStatusIndicatorState();
 }
 
 class _ConnectionStatusIndicatorState extends State<ConnectionStatusIndicator>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _pulse;
+  late AnimationController _controller;
+  late Animation<double> _pulse;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(seconds: 2),
       vsync: this,
+      duration: const Duration(seconds: 1),
     )..repeat(reverse: true);
-
-    _pulse = Tween<double>(begin: 0.9, end: 1.1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _pulse = Tween<double>(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -140,32 +144,48 @@ class _ConnectionStatusIndicatorState extends State<ConnectionStatusIndicator>
   @override
   Widget build(BuildContext context) {
     final isConnected = widget.isConnected;
-    final outerColor = isConnected ? Colors.green.shade800 : const Color(0xFFB11226);
+    final outerColor = isConnected
+        ? Colors.green.shade800
+        : const Color(0xFFB11226);
     final middleColor = isConnected ? Colors.green : const Color(0xFFD32F2F);
-    final innerColor = isConnected ? Colors.green.shade100 : Colors.grey.shade200;
+    final innerColor = isConnected
+        ? Colors.green.shade100
+        : Colors.grey.shade200;
     final text = isConnected ? 'Connected' : 'Searching...';
 
     return ScaleTransition(
       scale: _pulse,
       child: Container(
-        width: 180,
-        height: 180,
+        width: 117,
+        height: 117,
         decoration: BoxDecoration(color: outerColor, shape: BoxShape.circle),
         child: Center(
           child: Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(color: middleColor, shape: BoxShape.circle),
+            width: 88,
+            height: 88,
+            decoration: BoxDecoration(
+              color: middleColor,
+              shape: BoxShape.circle,
+            ),
             child: Center(
               child: Container(
                 width: 60,
                 height: 60,
-                decoration: BoxDecoration(color: innerColor, shape: BoxShape.circle),
+                decoration: BoxDecoration(
+                  color: innerColor,
+                  shape: BoxShape.circle,
+                ),
                 alignment: Alignment.center,
-                child: Text(
-                  text,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                child: FittedBox(
+                  child: Text(
+                    text,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -175,7 +195,6 @@ class _ConnectionStatusIndicatorState extends State<ConnectionStatusIndicator>
     );
   }
 }
-
 
 class InsertCardReaderScreen extends StatefulWidget {
   const InsertCardReaderScreen({super.key});
@@ -268,37 +287,9 @@ class SelectDeviceScreen extends StatelessWidget {
       onNext: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => const InsertCardScreen()),
+          MaterialPageRoute(builder: (_) => const ConfirmAmountScreen()),
         );
       },
-    );
-  }
-}
-
-// 3️⃣ Insert card
-class InsertCardScreen extends StatelessWidget {
-  const InsertCardScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return BaseScreen(
-      title: 'Credio Reader',
-      step: 2,
-      content: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Icon(Icons.credit_card, size: 72, color: Colors.black),
-          SizedBox(height: 24),
-          Text('Insert your card', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          SizedBox(height: 12),
-          Text(
-            'Please insert your card into Credio reader to continue.',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.black),
-          ),
-        ],
-      ),
-      buttonText: 'Continue',
-      onNext: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ConfirmAmountScreen())),
     );
   }
 }
@@ -316,15 +307,27 @@ class ConfirmAmountScreen extends StatelessWidget {
         children: const [
           Icon(Icons.check_circle_outline, size: 72, color: Colors.red),
           SizedBox(height: 24),
-          Text('Confirm Transaction Amount', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(
+            'Confirm Transaction Amount',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           SizedBox(height: 12),
-          Text('Please verify transaction amount:', style: TextStyle(color: Colors.black54)),
+          Text(
+            'Please verify transaction amount:',
+            style: TextStyle(color: Colors.black54),
+          ),
           SizedBox(height: 8),
-          Text('₦100,000', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          Text(
+            '₦100,000',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
         ],
       ),
       buttonText: 'Confirm',
-      onNext: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EnterPinScreen())),
+      onNext: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const EnterPinScreen()),
+      ),
     );
   }
 }
@@ -338,8 +341,10 @@ class EnterPinScreen extends StatefulWidget {
 }
 
 class _EnterPinScreenState extends State<EnterPinScreen> {
-  final List<TextEditingController> _controllers =
-      List.generate(4, (_) => TextEditingController());
+  final List<TextEditingController> _controllers = List.generate(
+    4,
+    (_) => TextEditingController(),
+  );
   final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
 
   void _submitPin() {
@@ -421,7 +426,6 @@ class _EnterPinScreenState extends State<EnterPinScreen> {
   }
 }
 
-
 class ProcessingScreen extends StatefulWidget {
   const ProcessingScreen({super.key});
   @override
@@ -433,7 +437,10 @@ class _ProcessingScreenState extends State<ProcessingScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const TransactionSuccessScreen()));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const TransactionSuccessScreen()),
+      );
     });
   }
 
@@ -445,21 +452,25 @@ class _ProcessingScreenState extends State<ProcessingScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Color(0xFF017A36))),
+            CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(Color(0xFF017A36)),
+            ),
             SizedBox(height: 24),
-            Text('Processing Transaction', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            Text(
+              'Processing Transaction',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
             SizedBox(height: 12),
-            Text('Your transaction is being processed. Please wait.', textAlign: TextAlign.center),
+            Text(
+              'Your transaction is being processed. Please wait.',
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),
     );
   }
 }
-
-
-
-
 
 class TransactionSuccessScreen extends StatelessWidget {
   const TransactionSuccessScreen({super.key});
@@ -487,7 +498,11 @@ class TransactionSuccessScreen extends StatelessWidget {
                       color: const Color(0xFFDFF5E3), // light green circle
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.check, size: 48, color: Color(0xFF017A36)),
+                    child: const Icon(
+                      Icons.check,
+                      size: 48,
+                      color: Color(0xFF017A36),
+                    ),
                   ),
                   const SizedBox(height: 24),
                   const Text(
@@ -500,7 +515,10 @@ class TransactionSuccessScreen extends StatelessWidget {
                     child: Text.rich(
                       TextSpan(
                         children: [
-                          TextSpan(text: 'Payment of ', style: TextStyle(fontSize: 16)),
+                          TextSpan(
+                            text: 'Payment of ',
+                            style: TextStyle(fontSize: 16),
+                          ),
                           TextSpan(
                             text: '100.000\$',
                             style: TextStyle(
@@ -533,7 +551,9 @@ class TransactionSuccessScreen extends StatelessWidget {
                         onPressed: () {
                           Navigator.pushAndRemoveUntil(
                             context,
-                            MaterialPageRoute(builder: (_) => const DashboardScreen()),
+                            MaterialPageRoute(
+                              builder: (_) => const DashboardScreen(),
+                            ),
                             (route) => false,
                           );
                         },
@@ -549,7 +569,7 @@ class TransactionSuccessScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -559,5 +579,3 @@ class TransactionSuccessScreen extends StatelessWidget {
     );
   }
 }
-
-

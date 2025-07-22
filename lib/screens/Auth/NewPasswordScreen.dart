@@ -1,3 +1,4 @@
+import 'package:agent360/screens/Auth/Login.dart';
 import 'package:flutter/material.dart';
 
 class NewPasswordScreen extends StatefulWidget {
@@ -8,29 +9,42 @@ class NewPasswordScreen extends StatefulWidget {
 }
 
 class _NewPasswordScreenState extends State<NewPasswordScreen> {
-  final _newPasswordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  bool _passwordVisible = false;
+  bool _confirmPasswordVisible = false;
+  String? _errorText;
 
   @override
   void dispose() {
-    _newPasswordController.dispose();
+    _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
 
   void _submitNewPassword() {
-    final newPassword = _newPasswordController.text;
-    final confirmPassword = _confirmPasswordController.text;
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
 
-    if (newPassword != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
-      );
+    if (password.isEmpty || confirmPassword.isEmpty) {
+      setState(() => _errorText = 'Please fill in both fields.');
       return;
     }
 
-    // TODO: Submit new password to backend
-    print('Password reset to: $newPassword');
+    if (password != confirmPassword) {
+      setState(() => _errorText = 'Passwords do not match.');
+      return;
+    }
+
+    // Clear error
+    setState(() => _errorText = null);
+
+    // TODO: Password submission logic here
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      (route) => false,
+    );
   }
 
   @override
@@ -38,49 +52,81 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(color: Colors.black),
-        elevation: 0,
         backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              'Reset password',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 24),
-            const Text("Create new password"),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _newPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
+            const SizedBox(height: 16),
+            const Center(
+              child: Text(
+                'Reset Password',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(height: 24),
-            const Text("Confirm password"),
-            const SizedBox(height: 8),
+
+            // Password
+            TextField(
+              controller: _passwordController,
+              obscureText: !_passwordVisible,
+              decoration: InputDecoration(
+                labelText: 'New Password',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _passwordVisible = !_passwordVisible;
+                    });
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Confirm Password
             TextField(
               controller: _confirmPasswordController,
-              obscureText: true,
+              obscureText: !_confirmPasswordVisible,
               decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                labelText: 'Confirm Password',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _confirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _confirmPasswordVisible = !_confirmPasswordVisible;
+                    });
+                  },
                 ),
               ),
             ),
-            const Spacer(),
+
+            if (_errorText != null) ...[
+              const SizedBox(height: 12),
+              Text(
+                _errorText!,
+                style: const TextStyle(color: Colors.red),
+              ),
+            ],
+
+            const SizedBox(height: 32),
+
+            // Submit
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _submitNewPassword,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFB11226),
+                  backgroundColor: const Color(0xFFA61111),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -88,11 +134,10 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                 ),
                 child: const Text(
                   'Submit',
-                  style: TextStyle(fontSize: 16,color: Colors.white,),
+                  style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),
             ),
-            const SizedBox(height: 24),
           ],
         ),
       ),

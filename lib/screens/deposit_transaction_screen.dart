@@ -1,4 +1,5 @@
 import 'package:agent360/screens/TransactionDetailsScreen.dart';
+import 'package:agent360/screens/advanceFundsScreen.dart';
 import 'package:agent360/screens/deposit_funds_screen.dart';
 import 'package:agent360/screens/filter-screens-for-deposit.dart';
 import 'package:agent360/screens/notification_screen.dart';
@@ -143,6 +144,14 @@ class _DepositTransactionScreenState extends State<DepositTransactionScreen> {
                                   MaterialPageRoute(
                                     builder: (_) =>
                                         const WithdrawFundsScreen(), // ⬅️ your withdraw screen
+                                  ),
+                                );
+                              } else if (widget.type == 'Advance') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        const AdvanceFundsScreen(), // ⬅️ your withdraw screen
                                   ),
                                 );
                               }

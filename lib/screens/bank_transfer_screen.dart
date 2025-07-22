@@ -1,3 +1,5 @@
+import 'package:agent360/screens/DashboardScreen.dart';
+import 'package:agent360/screens/TransactionSuccessScreenUI.dart';
 import 'package:agent360/screens/notification_screen.dart';
 import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
@@ -143,7 +145,27 @@ class _BankTransferScreenState extends State<BankTransferScreen> {
 
                     ElevatedButton(
                       onPressed: () {
-                        // handle confirmation
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => TransactionSuccessUIScreen(
+                              title: 'Transfer Confirmed',
+                              message:
+                                  'Thank you, your transfer was successful.',
+                              amount:
+                                  1250.00, // ← You can make this dynamic if needed
+                              onDone: () {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const DashboardScreen(),
+                                  ),
+                                  (_) => false,
+                                );
+                              },
+                            ),
+                          ),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFD32F2F),

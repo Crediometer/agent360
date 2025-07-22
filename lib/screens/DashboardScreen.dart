@@ -176,7 +176,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       },
       {
         'icon': Icons.receipt_long,
-        'label': 'Total Advences:',
+        'label': 'Total Advance:',
         'value': '₦ 0.00',
         'onTap': () => _navigateToTransactionScreen('Advance'),
       },
