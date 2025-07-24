@@ -38,6 +38,9 @@ dependencies:
   path: ^1.8.3
   permission_handler: ^11.3.0
   dotted_border: ^2.0.0
+  mobile_scanner: ^3.1.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0  # Add this line
   
 
   # The following adds the Cupertino Icons font to your application.
@@ -48,6 +51,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  hive_generator: ^1.1.1
+  build_runner: ^2.4.0  
     
 
   # The "flutter_lints" package below contains a set of recommended lints to

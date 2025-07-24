@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../screens/notification_screen.dart';
+import '../features/screens/notification/screens/notification_screen.dart';
 
 class NotificationIconWithBadge extends StatelessWidget {
   final int unreadCount;
