@@ -1,4 +1,4 @@
-package com.example.agent360
+package com.crediometer.agent360
 
 import io.flutter.embedding.android.FlutterActivity
 
