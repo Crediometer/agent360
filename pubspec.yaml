@@ -41,6 +41,8 @@ dependencies:
   mobile_scanner: ^3.1.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0  # Add this line
+  device_info_plus: ^10.0.1
+  http: ^1.2.1
   
 
   # The following adds the Cupertino Icons font to your application.

@@ -1,3 +1,4 @@
+import 'package:agent360/features/screens/Auth/screens/verification_screen.dart';
 import 'package:agent360/features/screens/notification/screens/notification_screen.dart';
 import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
@@ -45,105 +46,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: ListView(
             children: [
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Transaction overview',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: NotificationIconWithBadge(
-                      unreadCount: 1,
-                      iconSize: 22,
-                      iconColor: Colors.black87,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const NotificationScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Hi Roberta!',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                'Agent-ID: cred-12',
-                style: TextStyle(color: Colors.grey.shade600),
-              ),
-              const SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFCC162D),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Total Balance:',
-                          style: TextStyle(color: Colors.white, fontSize: 14),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          '0.00',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: Colors.white24,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            spreadRadius: 1,
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.visibility_off_outlined,
-                        color: Colors.white,
-                        size: 22,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
+              _buildHeader(),
+              const SizedBox(height: 16),
+              _buildVerificationCard(),
+              const SizedBox(height: 16),
+              _buildTotalBalanceCard(),
+              const SizedBox(height: 16),
               ..._buildInfoTiles(context),
               const SizedBox(height: 12),
               const Center(
@@ -152,10 +61,135 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Hi Roberta!',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 4),
+            Text('Agent-ID: cred-12', style: TextStyle(color: Colors.grey)),
+          ],
+        ),
+        Container(
+          height: 40,
+          width: 40,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 6,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: NotificationIconWithBadge(
+            unreadCount: 1,
+            iconSize: 22,
+            iconColor: Colors.black87,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const NotificationScreen()),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVerificationCard() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF2F2F2),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          const Expanded(
+            child: Text(
+              "Let's get you verified",
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFCC162D),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              shape: const RoundedRectangleBorder(), // No rounded corners
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const VerificationScreen()),
+              );
+            },
+
+            child: const Text("Verify", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTotalBalanceCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFFCC162D),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Total Balance:',
+                style: TextStyle(color: Colors.white, fontSize: 14),
+              ),
+              SizedBox(height: 8),
+              Text(
+                '₦ 0.00',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: Colors.white24,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(
+              Icons.visibility_off_outlined,
+              color: Colors.white,
+              size: 22,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -176,7 +210,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       },
       {
         'icon': Icons.receipt_long,
-        'label': 'Total Advance:',
+        'label': 'Total Advances:',
         'value': '₦ 0.00',
         'onTap': () => _navigateToTransactionScreen('Advance'),
       },
@@ -191,11 +225,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         'value': '₦ 0.00',
         'onTap': () => _navigateToTransactionScreen('First Income'),
       },
-      {
-        'icon': Icons.send,
-        'label': 'Total Amount Given Out:',
-        'value': '₦ 0.00',
-      },
+      {'icon': Icons.send, 'label': 'Total Disbursement:', 'value': '₦ 0.00'},
     ];
 
     return data
@@ -207,13 +237,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  border: Border.all(color: const Color(0xFF891826)),
+                  border: Border.all(color: const Color(0xFFCC162D)),
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),

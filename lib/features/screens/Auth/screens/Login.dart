@@ -1,4 +1,5 @@
 import 'package:agent360/features/screens/Auth/screens/ForgotPasswordScreen.dart';
+import 'package:agent360/features/screens/Auth/screens/SignUp.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -135,10 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 6),
         TextField(
@@ -161,10 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(
-                color: Color(0xFFD32F2F),
-                width: 2,
-              ),
+              borderSide: const BorderSide(color: Color(0xFFD32F2F), width: 2),
             ),
             isDense: true,
             suffixIcon: isPassword
@@ -225,10 +220,36 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 60),
               Center(child: _buildLogo()),
               const SizedBox(height: 32),
-              const Text(
-                'Sign in',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Don't have an account?",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  const SizedBox(width: 4),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const RegisterScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Sign up',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF0A5728),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
+
               const SizedBox(height: 24),
               _formField(
                 label: 'Username',
