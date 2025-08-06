@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -28,12 +31,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _passwordController.text == _confirmController.text;
 
   void _showToast(String msg) {
-    Fluttertoast.showToast(msg: msg, toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM);
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.black87,
+        textColor: Colors.white,
+        fontSize: 14);
+  }
+
+  Future<Map<String, String>> getDeviceInfo() async {
+    final deviceInfoPlugin = DeviceInfoPlugin();
+
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfoPlugin.androidInfo;
+      return {
+        'deviceId': androidInfo.id ?? 'unknown',
+        'deviceType': 'MOBILE',
+        'platform': 'Android',
+        'model': androidInfo.model ?? 'unknown',
+        'osVersion': androidInfo.version.release ?? 'unknown',
+      };
+    } else if (Platform.isIOS) {
+      final iosInfo = await deviceInfoPlugin.iosInfo;
+      return {
+        'deviceId': iosInfo.identifierForVendor ?? 'unknown',
+        'deviceType': 'MOBILE',
+        'platform': 'iOS',
+        'model': iosInfo.utsname.machine ?? 'unknown',
+        'osVersion': iosInfo.systemVersion ?? 'unknown',
+      };
+    } else {
+      return {
+        'deviceId': 'unknown',
+        'deviceType': 'UNKNOWN',
+        'platform': 'flutter',
+        'model': 'unknown',
+        'osVersion': 'unknown',
+      };
+    }
   }
 
   Future<void> _onRegister() async {
-    if (!_isFormValid) return;
+    if (!_isFormValid) {
+      _showToast('Please fill all fields correctly.');
+      return;
+    }
+
     setState(() => _isLoading = true);
+
+    final deviceInfo = await getDeviceInfo();
 
     final body = {
       'email': _emailController.text.trim(),
@@ -41,33 +88,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'firstName': _firstNameController.text.trim(),
       'lastName': _lastNameController.text.trim(),
       'deviceInfo': {
-        'platform': 'web',
-        'model': 'browser',
-        'osVersion': 'N/A',
+        'deviceId': deviceInfo['deviceId'],
+        'deviceType': deviceInfo['deviceType'],
+        'platform': deviceInfo['platform'],
+        'model': deviceInfo['model'],
+        'osVersion': deviceInfo['osVersion'],
       },
     };
 
     try {
-      final resp = await http.post(
-        Uri.parse('https://agent360.onrender.com/api/v1/auth/register'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(body),
-      );
-      final data = json.decode(resp.body);
-    if (resp.statusCode == 201) {
-  _showToast('Account created. Verify your email.');
-  Navigator.pop(context);
-} else if (data['errors'] != null) {
-  final errors = data['errors'] as Map<String, dynamic>;
-  errors.forEach((field, msgList) {
-    _showToast('$field: ${msgList[0]}');
-  });
-} else {
-  _showToast(data['message'] ?? 'Registration failed');
-}
+      final response = await http
+          .post(
+            Uri.parse('https://agent360.onrender.com/api/v1/auth/register'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(body),
+          )
+          .timeout(
+            const Duration(seconds: 15),
+            onTimeout: () {
+              throw TimeoutException('Request timed out');
+            },
+          );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 201) {
+        _showToast('Account created successfully! Please verify your email.');
+        Navigator.pop(context);
+      } else if (response.statusCode == 400 && data['errors'] != null) {
+        final errors = data['errors'] as Map<String, dynamic>;
+        String firstError = errors.entries.first.value[0];
+        _showToast(firstError);
+      } else {
+        _showToast(data['message'] ?? 'Registration failed. Try again.');
+      }
+    } on TimeoutException {
+      _showToast('Request Timed Out. Try Again.');
+    } on http.ClientException catch (e) {
+      _showToast('Network Error: ${e.message}');
     } catch (e) {
-      _showToast('Error: $e');
+      _showToast('Unexpected Error: $e');
     }
+
     setState(() => _isLoading = false);
   }
 
@@ -188,61 +250,63 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F2),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            children: [
-              const SizedBox(height: 60),
-              Center(child: _buildLogo()),
-              const SizedBox(height: 32),
-              const Text(
-                'Sign up',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 24),
-              _formField('Email', _emailController),
-              const SizedBox(height: 16),
-              _formField('First Name', _firstNameController),
-              const SizedBox(height: 16),
-              _formField('Last Name', _lastNameController),
-              const SizedBox(height: 16),
-              _formField('Password', _passwordController, isPassword: true),
-              const SizedBox(height: 16),
-              _formField('Confirm Password', _confirmController, isPassword: true),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                height: 40,
-                child: ElevatedButton(
-                  onPressed: _isFormValid && !_isLoading ? _onRegister : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _isFormValid
-                        ? const Color(0xFFA61111)
-                        : Colors.grey[400],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              children: [
+                const SizedBox(height: 60),
+                Center(child: _buildLogo()),
+                const SizedBox(height: 32),
+                const Text(
+                  'Sign up',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 24),
+                _formField('Email', _emailController),
+                const SizedBox(height: 16),
+                _formField('First Name', _firstNameController),
+                const SizedBox(height: 16),
+                _formField('Last Name', _lastNameController),
+                const SizedBox(height: 16),
+                _formField('Password', _passwordController, isPassword: true),
+                const SizedBox(height: 16),
+                _formField('Confirm Password', _confirmController, isPassword: true),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  height: 45,
+                  child: ElevatedButton(
+                    onPressed: _isFormValid && !_isLoading ? _onRegister : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _isFormValid
+                          ? const Color(0xFFA61111)
+                          : Colors.grey[400],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      elevation: 0,
                     ),
-                    elevation: 0,
-                  ),
-                  child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : Text(
-                          'Register',
-                          style: TextStyle(
-                            color: _isFormValid ? Colors.white : Colors.black,
+                    child: _isLoading
+                        ? const CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
+                        : Text(
+                            'Register',
+                            style: TextStyle(
+                              color: _isFormValid ? Colors.white : Colors.black,
+                            ),
                           ),
-                        ),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: const Text(
-                  'Already have an account? Sign in',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF0A5728)),
+                const SizedBox(height: 12),
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: const Text(
+                    'Already have an account? Sign in',
+                    style: TextStyle(fontSize: 12, color: Color(0xFF0A5728)),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
