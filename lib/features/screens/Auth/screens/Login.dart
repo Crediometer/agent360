@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'package:agent360/features/screens/Auth/screens/ForgotPasswordScreen.dart';
 import 'package:agent360/features/screens/Auth/screens/SignUp.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,29 +14,33 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+
   final _passwordController = TextEditingController();
   final _agentIdController = TextEditingController();
+  final _otpController = TextEditingController();
 
   bool _passwordVisible = false;
   bool _offlineMode = false;
+  bool _isLoading = false;
+  bool _otpRequired = false;
 
   bool get _isFormValid =>
-      _usernameController.text.isNotEmpty &&
+      _emailController.text.isNotEmpty &&
       _passwordController.text.isNotEmpty &&
-      _agentIdController.text.isNotEmpty;
+      _agentIdController.text.isNotEmpty &&
+      (!_otpRequired || _otpController.text.isNotEmpty);
 
   @override
   void initState() {
     super.initState();
-    _usernameController.addListener(_onFormChanged);
+    _emailController.addListener(_onFormChanged);
     _passwordController.addListener(_onFormChanged);
     _agentIdController.addListener(_onFormChanged);
+    _otpController.addListener(_onFormChanged);
   }
 
-  void _onFormChanged() {
-    setState(() {});
-  }
+  void _onFormChanged() => setState(() {});
 
   void _showToast(String message) {
     Fluttertoast.showToast(
@@ -46,11 +53,49 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+Future<void> _login() async {
+  setState(() => _isLoading = true);
+  try {
+    final uri = Uri.parse('https://agent360.onrender.com/api/v1/agent-auth/login');
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        "email": _emailController.text.trim(),
+        "agentCode": _agentIdController.text.trim(),
+        "password": _passwordController.text,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      final token = jsonResponse['data']?['token']; // ✅ Correct path
+
+      if (token != null) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', token);
+
+        _showToast("Login successful");
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        _showToast("Token not found in response");
+      }
+    } else {
+      _showToast("Error ${response.statusCode}: ${response.body}");
+    }
+  } catch (e) {
+    _showToast("Login failed: $e");
+  } finally {
+    setState(() => _isLoading = false);
+  }
+}
+
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     _agentIdController.dispose();
+    _otpController.dispose();
     super.dispose();
   }
 
@@ -142,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
         TextField(
           controller: controller,
           obscureText: isObscure,
-          style: const TextStyle(color: Colors.black), // ✅ Text color #000000
+          style: const TextStyle(color: Colors.black),
           decoration: InputDecoration(
             hintText: hint,
             contentPadding: const EdgeInsets.symmetric(
@@ -199,7 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 _offlineMode = val;
               });
             },
-            activeColor: const Color(0xFFA61111), // Match splash circle
+            activeColor: const Color(0xFFA61111),
             inactiveThumbColor: Colors.grey[400],
             inactiveTrackColor: Colors.grey[300],
           ),
@@ -249,13 +294,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 24),
               _formField(
-                label: 'Username',
-                controller: _usernameController,
-                hint: 'Username',
+                label: 'Email',
+                controller: _emailController,
+                hint: 'you@example.com',
               ),
+
               const SizedBox(height: 16),
               _formField(
                 label: 'Password',
@@ -275,19 +320,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _agentIdController,
                 hint: 'cred-12',
               ),
+              if (_otpRequired) ...[
+                const SizedBox(height: 16),
+                _formField(
+                  label: 'OTP Code',
+                  controller: _otpController,
+                  hint: 'Enter OTP sent to email/device',
+                ),
+              ],
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 height: 40,
                 child: ElevatedButton(
-                  onPressed: _isFormValid
-                      ? () {
-                          _showToast('Login successful');
-                          Future.delayed(const Duration(milliseconds: 500), () {
-                            Navigator.pushReplacementNamed(context, '/home');
-                          });
-                        }
-                      : null,
+                  onPressed: _isFormValid && !_isLoading ? _login : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isFormValid
                         ? const Color(0xFFA61111)
@@ -297,12 +343,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     elevation: 0,
                   ),
-                  child: Text(
-                    'Sign in',
-                    style: TextStyle(
-                      color: _isFormValid ? Colors.white : Colors.black,
-                    ),
-                  ),
+                  child: _isLoading
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        )
+                      : Text(
+                          'Sign in',
+                          style: TextStyle(
+                            color: _isFormValid ? Colors.white : Colors.black,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 8),

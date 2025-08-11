@@ -1,6 +1,7 @@
 import 'package:agent360/features/screens/Auth/screens/ForgotPasswordScreen.dart';
 import 'package:agent360/features/screens/Auth/screens/Login.dart';
 import 'package:agent360/features/screens/profile/screens/user_debug_screen.dart';
+import 'package:agent360/features/screens/shared/screens/AuthGuard.dart';
 import 'package:agent360/features/screens/shared/screens/Tabs.dart';
 import 'package:agent360/models/user_model.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
         '/onboarding': (context) => OnBoardingScreen(),
         '/login': (context) => LoginScreen(),
         '/forgot-password': (_) => const ForgotPasswordScreen(),
-        '/home': (context) => const MainLayout(),
+        '/home': (context) => const AuthGuard(child: MainLayout()),
 
       },
       home: const UserDebugScreen(),

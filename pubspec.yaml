@@ -43,6 +43,8 @@ dependencies:
   hive_flutter: ^1.1.0  # Add this line
   device_info_plus: ^10.0.1
   http: ^1.2.1
+  fluttertoast: ^8.2.1
+  shared_preferences: ^2.1.1
   
 
   # The following adds the Cupertino Icons font to your application.
