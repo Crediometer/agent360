@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:agent360/features/screens/Auth/screens/ForgotPasswordScreen.dart';
-import 'package:agent360/features/screens/Auth/screens/SignUp.dart';
+// import 'package:agent360/features/screens/Auth/screens/SignUp.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -266,34 +266,7 @@ Future<void> _login() async {
               Center(child: _buildLogo()),
               const SizedBox(height: 32),
               const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Don't have an account?",
-                    style: TextStyle(fontSize: 12),
-                  ),
-                  const SizedBox(width: 4),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const RegisterScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'Sign up',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFF0A5728),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+        
               const SizedBox(height: 24),
               _formField(
                 label: 'Email',
