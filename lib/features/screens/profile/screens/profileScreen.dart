@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AgentProfilePage extends StatelessWidget {
   const AgentProfilePage({super.key});
@@ -549,6 +550,8 @@ Widget _uploadedFileTile({
   );
 }
 
+
+
 void _showLogoutDialog(BuildContext context) {
   showDialog(
     context: context,
@@ -568,12 +571,22 @@ void _showLogoutDialog(BuildContext context) {
             ),
             const SizedBox(height: 24),
             SizedBox(
-              width: 96,
+              width: 160,
               height: 40,
               child: TextButton(
-                onPressed: () {
+                onPressed: () async {
                   Navigator.of(context).pop(); // Close dialog
-                  // TODO: Add logout logic here
+                  
+                  // ✅ Logout logic
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.remove('token');
+
+                  // Redirect to login
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/login',
+                    (route) => false,
+                  );
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.white,
@@ -609,7 +622,7 @@ void _showLogoutDialog(BuildContext context) {
                   ),
                 ),
                 child: const Text(
-                  "cancel",
+                  "Cancel",
                   style: TextStyle(color: Colors.white),
                 ),
               ),
