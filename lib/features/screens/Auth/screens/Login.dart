@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:agent360/features/screens/Auth/screens/ForgotPasswordScreen.dart';
+import 'package:agent360/features/utils/token_storage.dart';
 // import 'package:agent360/features/screens/Auth/screens/SignUp.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -72,8 +73,7 @@ Future<void> _login() async {
       final token = jsonResponse['data']?['token']; // ✅ Correct path
 
       if (token != null) {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', token);
+        await saveToken(token); // ✅ yahan pe token save ho gaya
 
         _showToast("Login successful");
         Navigator.pushReplacementNamed(context, '/home');
@@ -89,7 +89,6 @@ Future<void> _login() async {
     setState(() => _isLoading = false);
   }
 }
-
   @override
   void dispose() {
     _emailController.dispose();

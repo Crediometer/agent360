@@ -69,36 +69,36 @@ class CustomerDetailScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Row(
-            children: [
-              CircleAvatar(
-                radius: 35,
-                backgroundImage: NetworkImage(customer.imageUrl),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      customer.name,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18),
-                    ),
-                    const SizedBox(height: 4),
-                    const Text("(619) 555-7890", style: TextStyle(color: Colors.grey)),
-                    const Text("San Diego", style: TextStyle(color: Colors.grey)),
-                  ],
-                ),
-              ),
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text("First Income", style: TextStyle(color: Colors.grey, fontSize: 12)),
-                  SizedBox(height: 4),
-                  Text("60.000", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                ],
-              ),
-            ],
+     children: [
+  CircleAvatar(
+    radius: 35,
+    backgroundImage: NetworkImage(customer.imageUrl ?? "https://via.placeholder.com/150"),
+  ),
+  const SizedBox(width: 16),
+  Expanded(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          customer.customerName, // ✅ correct field
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+        const SizedBox(height: 4),
+        Text(customer.phoneNumber, style: const TextStyle(color: Colors.grey)), // ✅ replace dummy
+        Text(customer.location, style: const TextStyle(color: Colors.grey)),    // ✅ replace dummy
+      ],
+    ),
+  ),
+  const Column(
+    crossAxisAlignment: CrossAxisAlignment.end,
+    children: [
+      Text("First Income", style: TextStyle(color: Colors.grey, fontSize: 12)),
+      SizedBox(height: 4),
+      Text("60.000", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+    ],
+  ),
+],
+
           ),
         ],
       ),

@@ -6,10 +6,11 @@ class AuthGuard extends StatelessWidget {
   final Widget child;
   const AuthGuard({required this.child, super.key});
 
-  Future<bool> _isLoggedIn() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token') != null;
-  }
+Future<bool> _isLoggedIn() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('auth_token') != null; // fixed key
+}
+
 
   @override
   Widget build(BuildContext context) {

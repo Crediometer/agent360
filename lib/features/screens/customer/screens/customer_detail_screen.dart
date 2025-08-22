@@ -70,9 +70,11 @@ class CustomerDetailScreen extends StatelessWidget {
           const SizedBox(height: 16),
           Row(
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 35,
-                backgroundImage: NetworkImage(customer.imageUrl),
+                backgroundImage: NetworkImage(
+                  "https://i.pravatar.cc/100?img=65", // dummy image
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -80,22 +82,39 @@ class CustomerDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      customer.name,
+                      customer.customerName, // 🔥 updated
                       style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
                     const SizedBox(height: 4),
-                    const Text("(619) 555-7890", style: TextStyle(color: Colors.grey)),
-                    const Text("San Diego", style: TextStyle(color: Colors.grey)),
+                    Text(
+                      customer.phoneNumber,
+                      style: const TextStyle(color: Colors.grey),
+                    ), // 🔥 updated
+                    Text(
+                      customer.location,
+                      style: const TextStyle(color: Colors.grey),
+                    ), // 🔥 updated
                   ],
                 ),
               ),
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text("First Income", style: TextStyle(color: Colors.grey, fontSize: 12)),
-                  SizedBox(height: 4),
-                  Text("60.000", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  const Text(
+                    "Business",
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    customer.businessName, // 🔥 updated
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -121,7 +140,10 @@ class CustomerDetailScreen extends StatelessWidget {
                 children: const [
                   Text("Total balance", style: TextStyle(color: Colors.red)),
                   Spacer(),
-                  Text("8.244 \$", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(
+                    "8.244 \$",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                 ],
               ),
             ),
@@ -139,15 +161,33 @@ class CustomerDetailScreen extends StatelessWidget {
                           showTitles: true,
                           interval: 1,
                           getTitlesWidget: (value, meta) {
-                            const labels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                            const labels = [
+                              "Sun",
+                              "Mon",
+                              "Tue",
+                              "Wed",
+                              "Thu",
+                              "Fri",
+                              "Sat",
+                            ];
                             final int idx = value.toInt();
-                            return Text(idx >= 0 && idx < labels.length ? labels[idx] : "");
+                            return Text(
+                              idx >= 0 && idx < labels.length
+                                  ? labels[idx]
+                                  : "",
+                            );
                           },
                         ),
                       ),
-                      leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      rightTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      topTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
                     ),
                     lineBarsData: [
                       LineChartBarData(
@@ -194,13 +234,21 @@ class CustomerDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         children: const [
-          Expanded(child: SummaryCard(label: "Deposit", value: "100,000")),
+          Expanded(
+            child: SummaryCard(label: "Deposit", value: "100,000"),
+          ),
           SizedBox(width: 8),
-          Expanded(child: SummaryCard(label: "Withdrawal", value: "20,000")),
+          Expanded(
+            child: SummaryCard(label: "Withdrawal", value: "20,000"),
+          ),
           SizedBox(width: 8),
-          Expanded(child: SummaryCard(label: "Advance", value: "150,000")),
+          Expanded(
+            child: SummaryCard(label: "Advance", value: "150,000"),
+          ),
           SizedBox(width: 8),
-          Expanded(child: SummaryCard(label: "Available Balance", value: "-70,000")),
+          Expanded(
+            child: SummaryCard(label: "Available Balance", value: "-70,000"),
+          ),
         ],
       ),
     );
@@ -214,7 +262,11 @@ class CustomerDetailScreen extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
           boxShadow: const [
-            BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
           ],
         ),
         child: Column(
@@ -254,7 +306,6 @@ class CustomerDetailScreen extends StatelessWidget {
     );
   }
 }
-
 
 class _TimeFilterChip extends StatelessWidget {
   final String label;
