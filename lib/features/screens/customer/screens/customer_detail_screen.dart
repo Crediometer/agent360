@@ -141,7 +141,7 @@ class CustomerDetailScreen extends StatelessWidget {
                   Text("Total balance", style: TextStyle(color: Colors.red)),
                   Spacer(),
                   Text(
-                    "8.244 \$",
+                    "8.244 \₦",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ],

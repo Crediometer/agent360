@@ -37,66 +37,81 @@ class _AddCustomerStep1ScreenState extends State<AddCustomerStep1Screen> {
   }
 
   Future<void> _createCustomer() async {
-    if (!_formKey.currentState!.validate()) return;
+  if (!_formKey.currentState!.validate()) return;
 
-    setState(() => isLoading = true);
+  setState(() => isLoading = true);
 
-    try {
-      final token = await getToken();
-      if (token == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Token not found. Please login again.")),
-        );
-        return;
-      }
-
-      final response = await http.post(
-        Uri.parse("https://agent360.onrender.com/api/v1/customers"),
-        headers: {
-          "Authorization": "Bearer $token",
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode({
-          "customerName": _customerNameController.text.trim(),
-          "businessName": _businessNameController.text.trim(),
-          "location": _locationController.text.trim(),
-          "email": _emailController.text.trim(),
-          "phoneNumber": _phoneNumberController.text.trim(),
-          "businessSize": _businessSize, // ✅ Proper Enum
-          "locationContactPhone": _locationContactPhoneController.text.trim(),
-          "locationContactEmail": _locationContactEmailController.text.trim(),
-          "primaryOwner": "6899c8113d9c058cf81dd7c8", // ✅ TEMP FIX
-          "createdBy": "6899c8113d9c058cf81dd7c8", // ✅ TEMP FIX
-        }),
+  try {
+    final token = await getToken();
+    if (token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Token not found. Please login again.")),
       );
-
-      if (response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Customer created successfully")),
-        );
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (_) =>
-                const MainLayout(initialIndex: 2), // 👈 Customers tab
-          ),
-          (route) => false,
-        );
-      } else {
-        debugPrint("Error: ${response.body}");
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Failed: ${response.body}")));
-      }
-    } catch (e) {
-      debugPrint("Exception: $e");
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Error: $e")));
-    } finally {
-      setState(() => isLoading = false);
+      return;
     }
+
+    // ✅ JWT decode
+    final payload = decodeJwtPayload(token);
+    final userId = payload["userId"];
+ // backend pe jis key se save hai wo use karega
+
+    if (userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("User ID missing in token!")),
+      );
+      return;
+    }
+
+    final response = await http.post(
+      Uri.parse("https://agent360.onrender.com/api/v1/customers"),
+      headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        "customerName": _customerNameController.text.trim(),
+        "businessName": _businessNameController.text.trim(),
+        "location": _locationController.text.trim(),
+        "email": _emailController.text.trim(),
+        "phoneNumber": _phoneNumberController.text.trim(),
+        "businessSize": _businessSize,
+        "locationContactPhone": _locationContactPhoneController.text.trim(),
+        "locationContactEmail": _locationContactEmailController.text.trim(),
+        "primaryOwner": userId, // ✅ Dynamic
+        "createdBy": userId,    // ✅ Dynamic
+      }),
+    );
+
+   if (response.statusCode == 201) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text("Customer created successfully")),
+  );
+
+  // ✅ Navigate to MainLayout with Customers tab (index 2)
+  Navigator.pushAndRemoveUntil(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const MainLayout(initialIndex: 2),
+    ),
+    (route) => false,
+  );
+}
+ else {
+      debugPrint("Error: ${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed: ${response.body}")),
+      );
+    }
+  } catch (e) {
+    debugPrint("Exception: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Error: $e")),
+    );
+  } finally {
+    setState(() => isLoading = false);
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +128,7 @@ class _AddCustomerStep1ScreenState extends State<AddCustomerStep1Screen> {
             children: [
               TextFormField(
                 controller: _customerNameController,
-                decoration: inputDecoration("Customer Name"),
+                decoration: inputDecoration("Full Name"),
                 validator: (val) => val!.isEmpty ? "Required" : null,
               ),
               const SizedBox(height: 16),
@@ -170,7 +185,7 @@ class _AddCustomerStep1ScreenState extends State<AddCustomerStep1Screen> {
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("Create Customer"),
+                    : const Text("Create Customer", style: TextStyle(color: Colors.white)),
               ),
             ],
           ),

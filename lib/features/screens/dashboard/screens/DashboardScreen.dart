@@ -195,85 +195,89 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   List<Widget> _buildInfoTiles(BuildContext context) {
-    final List<Map<String, dynamic>> data = [
-      {
-        'icon': Icons.account_balance,
-        'label': 'Total Deposit:',
-        'value': '₦ 0.00',
-        'onTap': () => _navigateToTransactionScreen('Deposit'),
-      },
-      {
-        'icon': Icons.account_balance_wallet,
-        'label': 'Total Withdrawals:',
-        'value': '₦ 0.00',
-        'onTap': () => _navigateToTransactionScreen('Withdraw'),
-      },
-      {
-        'icon': Icons.receipt_long,
-        'label': 'Total Advances:',
-        'value': '₦ 0.00',
-        'onTap': () => _navigateToTransactionScreen('Advance'),
-      },
-      {
-        'icon': Icons.sync_alt,
-        'label': 'Available Balance:',
-        'value': '₦ 0.00',
-      },
-      {
-        'icon': Icons.monetization_on,
-        'label': 'First Income:',
-        'value': '₦ 0.00',
-        'onTap': () => _navigateToTransactionScreen('First Income'),
-      },
-      {'icon': Icons.send, 'label': 'Total Disbursement:', 'value': '₦ 0.00'},
-    ];
+  final List<Map<String, dynamic>> data = [
+    {
+      'icon': Icons.account_balance,
+      'label': 'Total Deposit:',
+      'value': '₦ 0.00',
+      'onTap': () => _navigateToTransactionScreen('Deposit'),
+    },
+    {
+      'icon': Icons.account_balance_wallet,
+      'label': 'Total Withdrawals:',
+      'value': '₦ 0.00',
+      'onTap': () => _navigateToTransactionScreen('Withdraw'),
+    },
+    {
+      'icon': Icons.receipt_long,
+      'label': 'Total Advances:',
+      'value': '₦ 0.00',
+      'onTap': () => _navigateToTransactionScreen('Advance'),
+    },
+    {
+      'icon': Icons.sync_alt,
+      'label': 'Available Balance:',
+      'value': '₦ 0.00',
+    },
+    {
+      'icon': Icons.monetization_on,
+      'label': 'First Income:',
+      'value': '₦ 0.00',
+      'onTap': () => _navigateToTransactionScreen('First Income'),
+    },
+    {
+      'icon': Icons.send,
+      'label': 'Total Disbursement:',
+      'value': '₦ 0.00',
+    },
+  ];
 
-    return data
-        .map(
-          (item) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            child: GestureDetector(
-              onTap: item['onTap'] as VoidCallback?,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: const Color(0xFFCC162D)),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
+  return data
+      .map(
+        (item) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: GestureDetector(
+            onTap: item['onTap'] as VoidCallback?,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 14,
+              ),
+              child: Row(
+                children: [
+                  Icon(item['icon'] as IconData, color: Colors.black54),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      item['label'] as String,
+                      style: const TextStyle(fontSize: 14),
                     ),
-                  ],
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 14,
-                ),
-                child: Row(
-                  children: [
-                    Icon(item['icon'] as IconData, color: Colors.black54),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        item['label'] as String,
-                        style: const TextStyle(fontSize: 14),
-                      ),
+                  ),
+                  Text(
+                    item['value'] as String,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
                     ),
-                    Text(
-                      item['value'] as String,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
-        )
-        .toList();
-  }
+        ),
+      )
+      .toList();
+}
+
 }
