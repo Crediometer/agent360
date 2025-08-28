@@ -4,6 +4,8 @@ import 'package:agent360/features/utils/token_storage.dart';
 import 'package:agent360/widgets/notification_icon_with_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:agent360/services/network_service.dart';
+import 'package:agent360/services/offline_storage_service.dart';
 import 'customer_detail_screen.dart';
 
 class Customer {
@@ -75,6 +77,32 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
         return;
       }
 
+      // If token is an offline token or there is no internet, load cached customers
+      final isOfflineToken = token.startsWith('offline_');
+      final isConnected = await NetworkService().checkInternetConnection();
+
+      if (isOfflineToken || !isConnected) {
+        final cached = await OfflineStorageService.getCustomers();
+        setState(() {
+          allCustomers = cached.map((m) {
+            return Customer(
+              id: (m['_id'] ?? m['id'] ?? '').toString(),
+              customerName: (m['customerName'] ?? 'Unknown').toString(),
+              businessName: (m['businessName'] ?? '').toString(),
+              location: (m['location'] ?? '').toString(),
+              email: (m['email'] ?? '').toString(),
+              phoneNumber: (m['phoneNumber'] ?? '').toString(),
+              businessSize: (m['businessSize'] ?? '').toString(),
+              locationContactPhone: m['locationContactPhone']?.toString(),
+              locationContactEmail: m['locationContactEmail']?.toString(),
+            );
+          }).toList();
+          isLoading = false;
+        });
+        return;
+      }
+
+      // Online fetch
       final response = await http.get(
         Uri.parse("https://agent360.onrender.com/api/v1/customers"),
         headers: {
@@ -87,6 +115,12 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
         final data = jsonDecode(response.body);
         final List<dynamic> customersJson = data['data']['customers'] ?? [];
 
+        // Cache for offline usage
+        final List<Map<String, dynamic>> cacheable = customersJson
+            .map<Map<String, dynamic>>((e) => Map<String, dynamic>.from(e as Map))
+            .toList();
+        await OfflineStorageService.saveCustomers(cacheable);
+
         setState(() {
           allCustomers = customersJson
               .map((json) => Customer.fromJson(json))
@@ -94,10 +128,52 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
           isLoading = false;
         });
       } else {
-        throw Exception("Failed to load customers: ${response.body}");
+        // On server error, try offline cache as fallback
+        final cached = await OfflineStorageService.getCustomers();
+        if (cached.isNotEmpty) {
+          setState(() {
+            allCustomers = cached.map((m) {
+              return Customer(
+                id: (m['_id'] ?? m['id'] ?? '').toString(),
+                customerName: (m['customerName'] ?? 'Unknown').toString(),
+                businessName: (m['businessName'] ?? '').toString(),
+                location: (m['location'] ?? '').toString(),
+                email: (m['email'] ?? '').toString(),
+                phoneNumber: (m['phoneNumber'] ?? '').toString(),
+                businessSize: (m['businessSize'] ?? '').toString(),
+                locationContactPhone: m['locationContactPhone']?.toString(),
+                locationContactEmail: m['locationContactEmail']?.toString(),
+              );
+            }).toList();
+            isLoading = false;
+          });
+        } else {
+          throw Exception("Failed to load customers: ${response.body}");
+        }
       }
     } catch (e) {
-      setState(() => isLoading = false);
+      // Network failure: fallback to offline cache
+      try {
+        final cached = await OfflineStorageService.getCustomers();
+        setState(() {
+          allCustomers = cached.map((m) {
+            return Customer(
+              id: (m['_id'] ?? m['id'] ?? '').toString(),
+              customerName: (m['customerName'] ?? 'Unknown').toString(),
+              businessName: (m['businessName'] ?? '').toString(),
+              location: (m['location'] ?? '').toString(),
+              email: (m['email'] ?? '').toString(),
+              phoneNumber: (m['phoneNumber'] ?? '').toString(),
+              businessSize: (m['businessSize'] ?? '').toString(),
+              locationContactPhone: m['locationContactPhone']?.toString(),
+              locationContactEmail: m['locationContactEmail']?.toString(),
+            );
+          }).toList();
+          isLoading = false;
+        });
+      } catch (_) {
+        setState(() => isLoading = false);
+      }
       debugPrint("Error fetching customers: $e");
     }
   }

@@ -77,7 +77,7 @@ class AgentProfilePage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               child: Column(
-                children: const [
+                children: [
                   Row(
                     children: [
                       Icon(Icons.email, color: Colors.red),
@@ -97,6 +97,21 @@ class AgentProfilePage extends StatelessWidget {
                       SizedBox(width: 12),
                       Text("(619) 555-7890", style: TextStyle(fontSize: 16)),
                     ],
+                  ),
+                  SizedBox(height: 12),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/offline-data');
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.cloud_off, color: Colors.orange),
+                        SizedBox(width: 12),
+                        Text("Offline Data", style: TextStyle(fontSize: 16)),
+                        Spacer(),
+                        Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
+                      ],
+                    ),
                   ),
                 ],
               ),

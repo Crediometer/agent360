@@ -2,6 +2,7 @@ import 'package:agent360/features/screens/customer/screens/AddCustomerStep1Scree
 import 'package:agent360/features/screens/customer/screens/CustomerListScreen.dart';
 import 'package:agent360/features/screens/payments/screens/QuickPaymentOptionsScreen.dart';
 import 'package:agent360/features/screens/profile/screens/profileScreen.dart';
+import 'package:agent360/widgets/offline_status_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../../dashboard/screens/DashboardScreen.dart';
@@ -55,7 +56,12 @@ class _MainLayoutState extends State<MainLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: Column(
+        children: [
+          const OfflineStatusWidget(),
+          Expanded(child: _screens[_selectedIndex]),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:agent360/features/screens/Auth/screens/ForgotPasswordScreen.dart';
 import 'package:agent360/features/utils/token_storage.dart';
+import 'package:agent360/services/offline_storage_service.dart';
+import 'package:agent360/services/network_service.dart';
 // import 'package:agent360/features/screens/Auth/screens/SignUp.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -56,7 +58,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
 Future<void> _login() async {
   setState(() => _isLoading = true);
+  
   try {
+    // Check if offline mode is enabled
+    if (_offlineMode) {
+      await _loginOffline();
+      return;
+    }
+
+    // Check network connectivity
+    final networkService = NetworkService();
+    final isConnected = await networkService.checkInternetConnection();
+    
+    if (!isConnected) {
+      // Try offline login if no internet
+      await _loginOffline();
+      return;
+    }
+
+    // Online login
     final uri = Uri.parse('https://agent360.onrender.com/api/v1/agent-auth/login');
     final response = await http.post(
       uri,
@@ -70,10 +90,21 @@ Future<void> _login() async {
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
-      final token = jsonResponse['data']?['token']; // ✅ Correct path
+      final token = jsonResponse['data']?['token'];
+      final userData = jsonResponse['data']?['user'];
 
       if (token != null) {
-        await saveToken(token); // ✅ yahan pe token save ho gaya
+        await saveToken(token);
+        
+        // Save user data for offline access
+        if (userData != null) {
+          await OfflineStorageService.saveUserData({
+            ...userData,
+            'email': _emailController.text.trim(),
+            'agentCode': _agentIdController.text.trim(),
+            'lastLogin': DateTime.now().toIso8601String(),
+          });
+        }
 
         _showToast("Login successful");
         Navigator.pushReplacementNamed(context, '/home');
@@ -84,9 +115,37 @@ Future<void> _login() async {
       _showToast("Error ${response.statusCode}: ${response.body}");
     }
   } catch (e) {
-    _showToast("Login failed: $e");
+    // If online login fails, try offline login
+    await _loginOffline();
   } finally {
     setState(() => _isLoading = false);
+  }
+}
+
+Future<void> _loginOffline() async {
+  try {
+    final canLogin = await OfflineStorageService.canLoginOffline(
+      _emailController.text.trim(),
+      _agentIdController.text.trim(),
+    );
+
+    if (canLogin) {
+      final userData = await OfflineStorageService.getUserData();
+      if (userData != null) {
+        // Create a temporary token for offline use
+        final offlineToken = 'offline_${DateTime.now().millisecondsSinceEpoch}';
+        await saveToken(offlineToken);
+        
+        _showToast("Logged in offline mode");
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        _showToast("No cached user data found");
+      }
+    } else {
+      _showToast("Cannot login offline. No cached credentials found.");
+    }
+  } catch (e) {
+    _showToast("Offline login failed: $e");
   }
 }
   @override

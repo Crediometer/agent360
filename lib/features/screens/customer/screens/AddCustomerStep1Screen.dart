@@ -3,6 +3,8 @@ import 'package:agent360/features/screens/shared/screens/Tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:agent360/features/utils/token_storage.dart';
+import 'package:agent360/services/offline_storage_service.dart';
+import 'package:agent360/services/network_service.dart';
 
 class AddCustomerStep1Screen extends StatefulWidget {
   const AddCustomerStep1Screen({super.key});
@@ -37,38 +39,93 @@ class _AddCustomerStep1ScreenState extends State<AddCustomerStep1Screen> {
   }
 
   Future<void> _createCustomer() async {
-  if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
 
-  setState(() => isLoading = true);
+    setState(() => isLoading = true);
 
-  try {
-    final token = await getToken();
-    if (token == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Token not found. Please login again.")),
+    try {
+      final token = await getToken();
+      if (token == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Token not found. Please login again.")),
+        );
+        return;
+      }
+
+      // Check if token is offline token
+      final isOfflineToken = token.startsWith('offline_');
+      
+      // Check network connectivity
+      final networkService = NetworkService();
+      final isConnected = await networkService.checkInternetConnection();
+
+      if (isOfflineToken || !isConnected) {
+        // Create customer offline
+        await _createCustomerOffline();
+        return;
+      }
+
+      // Online customer creation
+      final payload = decodeJwtPayload(token);
+      final userId = payload["userId"];
+
+      if (userId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("User ID missing in token!")),
+        );
+        return;
+      }
+
+      final response = await http.post(
+        Uri.parse("https://agent360.onrender.com/api/v1/customers"),
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "customerName": _customerNameController.text.trim(),
+          "businessName": _businessNameController.text.trim(),
+          "location": _locationController.text.trim(),
+          "email": _emailController.text.trim(),
+          "phoneNumber": _phoneNumberController.text.trim(),
+          "businessSize": _businessSize,
+          "locationContactPhone": _locationContactPhoneController.text.trim(),
+          "locationContactEmail": _locationContactEmailController.text.trim(),
+          "primaryOwner": userId,
+          "createdBy": userId,
+        }),
       );
-      return;
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Customer created successfully")),
+        );
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const MainLayout(initialIndex: 2),
+          ),
+          (route) => false,
+        );
+      } else {
+        debugPrint("Error: ${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed: ${response.body}")),
+        );
+      }
+    } catch (e) {
+      debugPrint("Exception: $e");
+      // If online creation fails, try offline
+      await _createCustomerOffline();
+    } finally {
+      setState(() => isLoading = false);
     }
+  }
 
-    // ✅ JWT decode
-    final payload = decodeJwtPayload(token);
-    final userId = payload["userId"];
- // backend pe jis key se save hai wo use karega
-
-    if (userId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("User ID missing in token!")),
-      );
-      return;
-    }
-
-    final response = await http.post(
-      Uri.parse("https://agent360.onrender.com/api/v1/customers"),
-      headers: {
-        "Authorization": "Bearer $token",
-        "Content-Type": "application/json",
-      },
-      body: jsonEncode({
+  Future<void> _createCustomerOffline() async {
+    try {
+      final customerData = {
         "customerName": _customerNameController.text.trim(),
         "businessName": _businessNameController.text.trim(),
         "location": _locationController.text.trim(),
@@ -77,40 +134,31 @@ class _AddCustomerStep1ScreenState extends State<AddCustomerStep1Screen> {
         "businessSize": _businessSize,
         "locationContactPhone": _locationContactPhoneController.text.trim(),
         "locationContactEmail": _locationContactEmailController.text.trim(),
-        "primaryOwner": userId, // ✅ Dynamic
-        "createdBy": userId,    // ✅ Dynamic
-      }),
-    );
+      };
 
-   if (response.statusCode == 201) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text("Customer created successfully")),
-  );
+      await OfflineStorageService.addCustomerOffline(customerData);
 
-  // ✅ Navigate to MainLayout with Customers tab (index 2)
-  Navigator.pushAndRemoveUntil(
-    context,
-    MaterialPageRoute(
-      builder: (_) => const MainLayout(initialIndex: 2),
-    ),
-    (route) => false,
-  );
-}
- else {
-      debugPrint("Error: ${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed: ${response.body}")),
+        const SnackBar(
+          content: Text("Customer saved offline. Will sync when online."),
+          backgroundColor: Colors.orange,
+        ),
+      );
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const MainLayout(initialIndex: 2),
+        ),
+        (route) => false,
+      );
+    } catch (e) {
+      debugPrint("Offline creation error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Offline save failed: $e")),
       );
     }
-  } catch (e) {
-    debugPrint("Exception: $e");
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Error: $e")),
-    );
-  } finally {
-    setState(() => isLoading = false);
   }
-}
 
 
   @override
